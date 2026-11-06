@@ -17,12 +17,23 @@ function validateFile(content, schema, engine) {
   const schemaErrors = engine.validate(schema, parsed.value).map((error) => ({
     kind: 'schema',
     ...error,
-    ...parsed.locate(pointerToHighlight(error)),
+    ...locateError(parsed, error),
   }));
   return [...syntaxErrors, ...schemaErrors];
 }
 
-function pointerToHighlight(error) {
+export function locateError(parsed, error) {
   const unknownProperty = error.keyword === 'additionalProperties' ? error.params.additionalProperty : undefined;
-  return unknownProperty === undefined ? error.pointer : [...error.pointer, unknownProperty];
+  if (unknownProperty !== undefined) return parsed.locate([...error.pointer, unknownProperty], { key: true });
+  const value = valueAt(parsed.value, error.pointer);
+  return parsed.locate(error.pointer, { key: value !== null && typeof value === 'object' });
+}
+
+function valueAt(root, pointer) {
+  let current = root;
+  for (const segment of pointer) {
+    if (current === null || typeof current !== 'object') return undefined;
+    current = current[segment];
+  }
+  return current;
 }
