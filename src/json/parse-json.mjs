@@ -7,7 +7,7 @@ const LENIENT_COMMAS = { allowTrailingComma: true, disallowComments: false };
 
 export function parseJson(content) {
   const text = withoutBom(typeof content === 'string' ? content : new TextDecoder('utf-8', { ignoreBOM: true }).decode(content));
-  const positionOf = createLineIndex(text);
+  const spanOf = createSpanIndex(text);
   const parseErrors = [];
   const value = parse(text, parseErrors, STRICT_COMMAS);
   const tree = parseTree(text, [], LENIENT_COMMAS);
@@ -15,11 +15,25 @@ export function parseJson(content) {
   return {
     value,
     ok: parseErrors.length === 0,
-    syntaxErrors: describeSyntaxErrors(text, parseErrors, positionOf),
-    locate(pointer) {
+    syntaxErrors: describeSyntaxErrors(text, parseErrors, spanOf),
+    locate(pointer, { key = false } = {}) {
       const node = tree && findNodeAtLocation(tree, pointer);
-      return node ? positionOf(node.offset) : {};
+      if (!node) return {};
+      const target = key ? (keyOf(node) ?? node) : node;
+      return spanOf(target.offset, target.length);
     },
+  };
+}
+
+function keyOf(node) {
+  return node.parent?.type === 'property' ? node.parent.children[0] : undefined;
+}
+
+function createSpanIndex(text) {
+  const positionOf = createLineIndex(text);
+  return (offset, length) => {
+    const end = positionOf(offset + length);
+    return { ...positionOf(offset), offset, length, endLine: end.line, endColumn: end.column };
   };
 }
 

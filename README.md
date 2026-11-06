@@ -31,7 +31,24 @@ engine.resolve('data/mypack/species/foo.json');      // 'schemas/species/schema.
 engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message }] }
 
 validatePack(readPack('path/to/pack'), engine);
-// [{ file, schema, errors: [{ kind: 'syntax' | 'schema', message, line, column, pointer }] }]
+// [{ file, schema, errors: [{ kind: 'syntax' | 'schema', message, pointer,
+//                             line, column, offset, length, endLine, endColumn }] }]
+```
+
+Error positions are 1-based `line`/`column`, plus `offset`/`length` into the text (without any byte
+order mark) and an exclusive `endLine`/`endColumn`. To place errors from `engine.check` in an editor,
+parse the file with `parseJson` and pass each error to `locateError`. It returns the same range
+`validatePack` reports: the key of an unknown property or of an object or array, or the value
+otherwise.
+
+```js
+import { locateError, parseJson } from '@cobbled-creators/cobblemon-schemas';
+
+const parsed = parseJson(text);
+parsed.syntaxErrors;                          // [{ message, line, column, offset, length, endLine, endColumn }]
+parsed.locate(['stats', 'hp']);               // range of the value
+parsed.locate(['stats', 'hp'], { key: true }); // range of the key; array elements and the root fall back to the value
+engine.validate(schema, parsed.value).map((error) => ({ ...error, ...locateError(parsed, error) }));
 ```
 
 Browser: the main entry point has no Node APIs, and the validators are precompiled (no `eval`), so it
