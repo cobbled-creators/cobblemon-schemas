@@ -59,7 +59,9 @@ test('the published package contains what the exports point at, and nothing else
     .filter((target) => !target.includes('*'))
     .map((target) => target.replace(/^\.\//, ''));
 
-  for (const file of exported) assert.ok(published.includes(file), `${file} is exported but not published`);
+  const documented = ['indexes/data.json', 'indexes/assets.json', 'types/moves.d.ts', 'types/abilities.d.ts'];
+
+  for (const file of [...exported, ...documented]) assert.ok(published.includes(file), `${file} is not published`);
   const topLevel = [...new Set(published.map((file) => file.split('/')[0]))].sort();
-  assert.deepEqual(topLevel, ['LICENSE.md', 'README.md', 'bin', 'dist', 'package.json', 'schemas', 'src']);
+  assert.deepEqual(topLevel, ['LICENSE.md', 'README.md', 'bin', 'dist', 'indexes', 'package.json', 'schemas', 'src', 'types']);
 });
