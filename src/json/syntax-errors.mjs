@@ -21,23 +21,23 @@ const MESSAGES = {
 const CLOSING_BRACKETS = '}]';
 const ERRORS_AFTER_TRAILING_COMMA = new Set(['PropertyNameExpected', 'ValueExpected']);
 
-export function describeSyntaxErrors(text, parseErrors, positionOf) {
+export function describeSyntaxErrors(text, parseErrors, spanOf) {
   const described = [];
   const reportedOffsets = new Set();
   for (const parseError of parseErrors) {
-    const { message, offset } = describe(text, parseError);
+    const { message, offset, length } = describe(text, parseError);
     if (reportedOffsets.has(offset)) continue;
     reportedOffsets.add(offset);
-    described.push({ message, ...positionOf(offset) });
+    described.push({ message, ...spanOf(offset, length) });
   }
   return described;
 }
 
-function describe(text, { error, offset }) {
+function describe(text, { error, offset, length }) {
   const code = printParseErrorCode(error);
   const trailingComma = findTrailingComma(text, code, offset);
-  if (trailingComma !== null) return { message: 'Trailing comma.', offset: trailingComma };
-  return { message: MESSAGES[code] ?? code, offset };
+  if (trailingComma !== null) return { message: 'Trailing comma.', offset: trailingComma, length: 1 };
+  return { message: MESSAGES[code] ?? code, offset, length };
 }
 
 function findTrailingComma(text, code, offset) {

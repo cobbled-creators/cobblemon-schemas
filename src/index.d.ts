@@ -73,15 +73,35 @@ export function formatAjvError(error: unknown): string;
 export function decodePointer(pointer: string): Pointer;
 
 export interface Position {
+  /** 1-based. */
   line: number;
+  /** 1-based, in UTF-16 code units. */
   column: number;
+}
+
+/** A range of the BOM-stripped text. `endLine`/`endColumn` is exclusive: just after the last character. */
+export interface Span extends Position {
+  /** 0-based, in UTF-16 code units. */
+  offset: number;
+  length: number;
+  endLine: number;
+  endColumn: number;
+}
+
+export interface LocateOptions {
+  /**
+   * Locate the property's key rather than its value. Array elements and the root have no key, so
+   * they fall back to the value.
+   */
+  key?: boolean;
 }
 
 export interface ParsedJson {
   value: unknown;
   ok: boolean;
-  syntaxErrors: Array<Position & { message: string }>;
-  locate(pointer: Pointer): Position | Record<string, never>;
+  /** `length` can be 0, e.g. for a missing `}` at the end of the file. */
+  syntaxErrors: Array<Span & { message: string }>;
+  locate(pointer: Pointer, options?: LocateOptions): Span | Record<string, never>;
 }
 
 export function parseJson(bytes: Uint8Array | string): ParsedJson;
@@ -92,6 +112,10 @@ export interface PackError {
   message: string;
   line?: number;
   column?: number;
+  offset?: number;
+  length?: number;
+  endLine?: number;
+  endColumn?: number;
   keyword?: string;
   params?: Record<string, unknown>;
 }
@@ -101,5 +125,11 @@ export interface PackResult {
   schema: string;
   errors: PackError[];
 }
+
+/**
+ * The span `validatePack` reports for a schema error: the key of an unknown property, the key of an
+ * object or array (rather than the whole block), or else the value.
+ */
+export function locateError(parsed: ParsedJson, error: SchemaError): Span | Record<string, never>;
 
 export function validatePack(files: Map<string, Uint8Array | string>, engine: SchemaEngine): PackResult[];
