@@ -5,3 +5,16 @@
 First release of the Cobblemon 1.7 schemas. Copied from cobblemon-addon-vscode 0.10.1 (commit
 8d1bbf9), the last extension release for Cobblemon 1.7. Cobblemon's own data validates with no errors
 at 1.7.0, 1.7.1, 1.7.2 and 1.7.3.
+
+Error positions are now ranges, so editors can underline them without parsing the file again. The
+existing `line` and `column` fields are unchanged.
+
+- `parseJson(...).locate(pointer)` also returns `offset`, `length`, `endLine` and `endColumn`.
+  `endLine`/`endColumn` is exclusive. `locate(pointer, { key: true })` locates the property's key
+  instead of its value; array elements and the root have no key, so they fall back to the value.
+- Syntax errors and `validatePack` errors have the same span fields. A syntax error at the end of
+  the file can have `length` 0.
+- `locateError(parsed, error)` returns the span `validatePack` uses for a schema error, so other
+  tools can underline the same text as the CLI: the key of an unknown property or of an object or
+  array, or the value otherwise. For object and array errors the reported line and column now point
+  at the key instead of the opening bracket.
