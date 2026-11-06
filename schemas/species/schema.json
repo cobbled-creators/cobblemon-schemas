@@ -148,15 +148,6 @@
         "type": "string"
       }
     },
-    "signatureMoves": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "defaultWildMovesetBuilder": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-    },
     "features": {
       "type": "array",
       "items": {
@@ -430,9 +421,11 @@
             "willSleepOnBed": {
               "type": "boolean"
             },
-            "_comment": {}
+            "sleepChance": {
+              "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "moving": {
           "type": "object",
@@ -448,10 +441,13 @@
                 },
                 "walkSpeed": {
                   "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                },
-                "_comment": {}
+                }
               },
-              "additionalProperties": false
+              "additionalProperties": true
+            },
+            "walking": {
+              "type": "object",
+              "additionalProperties": true
             },
             "swim": {
               "type": "object",
@@ -479,10 +475,9 @@
                 },
                 "canWalkOnLava": {
                   "type": "boolean"
-                },
-                "_comment": {}
+                }
               },
-              "additionalProperties": false
+              "additionalProperties": true
             },
             "fly": {
               "type": "object",
@@ -492,10 +487,9 @@
                 },
                 "flySpeedHorizontal": {
                   "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                },
-                "_comment": {}
+                }
               },
-              "additionalProperties": false
+              "additionalProperties": true
             },
             "stepHeight": {
               "type": "number"
@@ -508,22 +502,15 @@
             },
             "canLook": {
               "type": "boolean"
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "idle": {
           "type": "object",
-          "properties": {
-            "_comment": {}
-          },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "fireImmune": {
-          "type": "boolean"
-        },
-        "freezeImmune": {
           "type": "boolean"
         },
         "dampensVibrations": {
@@ -543,10 +530,9 @@
             },
             "avoidedBySkeleton": {
               "type": "boolean"
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "lightningHit": {
           "type": "object",
@@ -572,29 +558,13 @@
                 ],
                 "additionalProperties": false
               }
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "blockInteract": {
           "type": "object",
-          "properties": {
-            "immuneToSweetBerryBushBlock": {
-              "type": "boolean"
-            },
-            "canStandOnPowderSnow": {
-              "type": "boolean"
-            },
-            "canPathThroughSaccLeaves": {
-              "type": "boolean"
-            },
-            "immuneToCobwebBlock": {
-              "type": "boolean"
-            },
-            "_comment": {}
-          },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "combat": {
           "type": "object",
@@ -610,10 +580,9 @@
             },
             "fightsMelee": {
               "type": "boolean"
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "herd": {
           "type": "object",
@@ -648,10 +617,9 @@
             },
             "followDistance": {
               "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "characteristicRainbow": {
           "type": "boolean"
@@ -686,20 +654,17 @@
                   },
                   "onUseEffect": {
                     "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                  },
-                  "_comment": {}
+                  }
                 },
-                "additionalProperties": false
+                "additionalProperties": true
               }
-            },
-            "_comment": {}
+            }
           },
-          "additionalProperties": false
-        },
-        "_comment": {}
+          "additionalProperties": true
+        }
       },
       "required": [],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "riding": {
       "type": "object",
@@ -939,15 +904,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "signatureMoves": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "defaultWildMovesetBuilder": {
-          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
         },
         "evolutions": {
           "type": "array",

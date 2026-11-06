@@ -1,6 +1,6 @@
 {
   "name": "@cobbled-creators/cobblemon-schemas",
-  "version": "1.8.0",
+  "version": "1.7.0",
   "description": "JSON Schemas for Cobblemon datapack and resource pack files, and a validator that knows which schema each pack file uses. One release line per Cobblemon version.",
   "type": "module",
   "license": "MIT",
@@ -20,9 +20,9 @@
     "validation"
   ],
   "cobblemon": {
-    "version": "1.8",
+    "version": "1.7",
     "minecraft": "1.21.1",
-    "baseline": "1.8.2"
+    "baseline": "1.7.3"
   },
   "exports": {
     ".": {

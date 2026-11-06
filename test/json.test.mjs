@@ -36,5 +36,5 @@ test('validatePack gives line numbers for syntax and schema errors', () => {
   assert.deepEqual([trailingComma.kind, trailingComma.message], ['syntax', 'Trailing comma.']);
   assert.match(lines[trailingComma.line - 1], /,$/);
   assert.equal(unknownProperty.kind, 'schema');
-  assert.match(lines[unknownProperty.line - 1], /"fireImmune"/);
+  assert.match(lines[unknownProperty.line - 1], /"notARealField"/);
 });

@@ -30,6 +30,7 @@
     }
   },
   "required": [
+    "enabled",
     "neededInstalledMods",
     "neededUninstalledMods",
     "spawns"
@@ -104,8 +105,7 @@
           "enum": [
             "pokemon",
             "pokemon-herd",
-            "npc",
-            "empty"
+            "npc"
           ]
         },
         "displayName": {
@@ -217,6 +217,7 @@
         }
       },
       "required": [
+        "id",
         "type",
         "bucket",
         "weight"
@@ -266,7 +267,6 @@
             }
           },
           "required": [
-            "id",
             "pokemon"
           ],
           "anyOf": [
@@ -324,19 +324,10 @@
                   "levelRangeOffset": {
                     "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
                   },
-                  "herdLevelRange": {
-                    "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
-                  },
                   "dropTable": {
                     "$ref": "../_shared/defs/drops.schema.json#/$defs/dropTable"
                   },
-                  "heldItem": {
-                    "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-                  },
                   "isLeader": {
-                    "type": "boolean"
-                  },
-                  "isFollower": {
                     "type": "boolean"
                   },
                   "weight": {
@@ -354,7 +345,6 @@
             }
           },
           "required": [
-            "id",
             "herdablePokemon"
           ],
           "anyOf": [
@@ -427,9 +417,6 @@
               "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
             }
           },
-          "required": [
-            "id"
-          ],
           "anyOf": [
             {
               "required": [
@@ -451,22 +438,6 @@
         }
       ]
     },
-    "emptySpawn": {
-      "allOf": [
-        {
-          "$ref": "#/$defs/spawnDetailBase"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "const": "empty"
-            }
-          },
-          "additionalProperties": true
-        }
-      ]
-    },
     "spawnDetail": {
       "oneOf": [
         {
@@ -477,9 +448,6 @@
         },
         {
           "$ref": "#/$defs/npcSpawn"
-        },
-        {
-          "$ref": "#/$defs/emptySpawn"
         }
       ]
     }

@@ -1,12 +1,7 @@
 # Changelog
 
-## 1.8.0 (unreleased)
+## 1.7.0 (unreleased)
 
-First release as its own package. The schemas were copied from cobblemon-addon-vscode (extension
-0.11.0, commit 3f13889), with these fixes:
-
-- Spawn pool files accept `"type": "empty"` spawns, which don't need an `id`. Cobblemon 1.8.2's own
-  `0000_empty.json` uses them.
-- Spawn bait effects no longer require `value`. Some stock berries leave it out.
-- Bedrock posers accept `profilePokedexScale`, `profilePokedexTranslation`, `profileSummaryScale` and
-  `profileSummaryTranslation`.
+First release of the Cobblemon 1.7 schemas. Copied from cobblemon-addon-vscode 0.10.1 (commit
+8d1bbf9), the last extension release for Cobblemon 1.7. Cobblemon's own data validates with no errors
+at 1.7.0, 1.7.1, 1.7.2 and 1.7.3.

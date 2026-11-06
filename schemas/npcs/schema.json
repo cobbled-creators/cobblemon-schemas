@@ -303,12 +303,7 @@
           "enum": [
             "simple",
             "pool",
-            "script",
-            "composed_pool",
-            "cobblemon:simple",
-            "cobblemon:pool",
-            "cobblemon:script",
-            "cobblemon:composed_pool"
+            "script"
           ]
         },
         {
@@ -319,12 +314,7 @@
               "enum": [
                 "simple",
                 "pool",
-                "script",
-                "composed_pool",
-                "cobblemon:simple",
-                "cobblemon:pool",
-                "cobblemon:script",
-                "cobblemon:composed_pool"
+                "script"
               ]
             },
             "isStatic": {
@@ -346,51 +336,41 @@
               "type": "boolean"
             },
             "pool": {
-              "oneOf": [
-                {
-                  "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "type": "string"
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "pokemon": {
+                        "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "pokemon": {
-                            "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
-                          },
-                          "levelVariation": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                          },
-                          "level": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                          },
-                          "npcLevels": {
-                            "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
-                          },
-                          "selectableTimes": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                          },
-                          "weight": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-                          }
-                        },
-                        "required": [
-                          "pokemon"
-                        ],
-                        "additionalProperties": false
+                      "levelVariation": {
+                        "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                      },
+                      "level": {
+                        "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                      },
+                      "npcLevels": {
+                        "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
+                      },
+                      "selectableTimes": {
+                        "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                      },
+                      "weight": {
+                        "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
                       }
-                    ]
+                    },
+                    "required": [
+                      "pokemon"
+                    ],
+                    "additionalProperties": false
                   }
-                }
-              ]
-            },
-            "composition": {
-              "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+                ]
+              }
             },
             "script": {
               "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
@@ -405,10 +385,7 @@
               "if": {
                 "properties": {
                   "type": {
-                    "enum": [
-                      "simple",
-                      "cobblemon:simple"
-                    ]
+                    "const": "simple"
                   }
                 },
                 "required": [
@@ -425,10 +402,7 @@
               "if": {
                 "properties": {
                   "type": {
-                    "enum": [
-                      "pool",
-                      "cobblemon:pool"
-                    ]
+                    "const": "pool"
                   }
                 },
                 "required": [
@@ -441,22 +415,14 @@
                   "maxPokemon",
                   "pool",
                   "isStatic"
-                ],
-                "properties": {
-                  "pool": {
-                    "type": "array"
-                  }
-                }
+                ]
               }
             },
             {
               "if": {
                 "properties": {
                   "type": {
-                    "enum": [
-                      "script",
-                      "cobblemon:script"
-                    ]
+                    "const": "script"
                   }
                 },
                 "required": [
@@ -467,34 +433,6 @@
                 "required": [
                   "script"
                 ]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "type": {
-                    "enum": [
-                      "composed_pool",
-                      "cobblemon:composed_pool"
-                    ]
-                  }
-                },
-                "required": [
-                  "type"
-                ]
-              },
-              "then": {
-                "required": [
-                  "pool",
-                  "composition",
-                  "minPokemon",
-                  "maxPokemon"
-                ],
-                "properties": {
-                  "pool": {
-                    "type": "string"
-                  }
-                }
               }
             }
           ]

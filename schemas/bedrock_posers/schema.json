@@ -19,18 +19,6 @@
     "profileTranslation": {
       "$ref": "#/$defs/vec3"
     },
-    "profilePokedexScale": {
-      "type": "number"
-    },
-    "profilePokedexTranslation": {
-      "$ref": "#/$defs/vec3"
-    },
-    "profileSummaryScale": {
-      "type": "number"
-    },
-    "profileSummaryTranslation": {
-      "$ref": "#/$defs/vec3"
-    },
     "maxScale": {
       "type": "number"
     },
