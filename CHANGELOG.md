@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.8.1 (unreleased)
+## 1.8.1
 
 Cobblemon's default content indexes and the move and ability types, moved over from
 cobblemon-addon-vscode so consumers don't need their own copy. Like the schemas, they're versioned
