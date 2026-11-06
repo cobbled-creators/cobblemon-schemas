@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cobblemon-schema.local/_shared/defs/ride.schema.json",
+  "title": "Cobblemon Shared Riding Definitions",
+  "type": "object",
+  "$defs": {
+    "seat": {
+      "type": "object",
+      "properties": {
+        "locator": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "./expressions.schema.json#/$defs/expressionLike"
+        },
+        "poseAnimations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "poseTypes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "animations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            },
+            "required": [
+              "poseTypes",
+              "animations"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "handsBusy": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

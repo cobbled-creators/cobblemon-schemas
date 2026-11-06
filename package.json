@@ -1,0 +1,66 @@
+{
+  "name": "@cobbled-creators/cobblemon-schemas",
+  "version": "1.8.0",
+  "description": "JSON Schemas for Cobblemon datapack and resource pack files, and a validator that knows which schema each pack file uses. One release line per Cobblemon version.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cobbled-creators/cobblemon-schemas.git"
+  },
+  "homepage": "https://github.com/cobbled-creators/cobblemon-schemas#readme",
+  "bugs": {
+    "url": "https://github.com/cobbled-creators/cobblemon-schemas/issues"
+  },
+  "keywords": [
+    "cobblemon",
+    "minecraft",
+    "datapack",
+    "json-schema",
+    "validation"
+  ],
+  "cobblemon": {
+    "version": "1.8",
+    "minecraft": "1.21.1",
+    "baseline": "1.8.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    },
+    "./node": {
+      "types": "./src/node.d.ts",
+      "default": "./src/node.mjs"
+    },
+    "./bundle.json": "./dist/bundle.json",
+    "./validators.mjs": "./dist/validators.mjs",
+    "./schemas/*": "./schemas/*",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "cobblemon-schemas": "./bin/cobblemon-schemas.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "schemas",
+    "src"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "baseline": "node scripts/baseline.mjs",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "jsonc-parser": "3.3.1"
+  }
+}
