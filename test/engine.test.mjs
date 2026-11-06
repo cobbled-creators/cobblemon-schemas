@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bundledEngine, liveEngine, SPECIES_SCHEMA, TESTMON, TESTMON_WITH_UNKNOWN_PROPERTY } from './helpers.mjs';
+import { bundledEngine, indexedSchemas, liveEngine, SPECIES_SCHEMA, TESTMON, TESTMON_WITH_UNKNOWN_PROPERTY } from './helpers.mjs';
 
-test('pack files resolve to the schema that covers them', () => {
+test('pack files resolve to the schema that covers them, when this version has it', () => {
   const expected = {
     'data/mypack/species/custom/foo.json': SPECIES_SCHEMA,
     'data/cobblemon/species_additions/foo.json': 'schemas/species_additions/schema.json',
@@ -13,7 +13,9 @@ test('pack files resolve to the schema that covers them', () => {
     'assets/cobblemon/bedrock/pokemon/posers/0001_bulbasaur/bulbasaur.json': 'schemas/bedrock_posers/schema.json',
     'assets/mypack/bedrock/pokemon/resolvers/0001_bulbasaur/0_bulbasaur_base.json': 'schemas/bedrock_pokemon_resolvers/schema.json',
   };
-  for (const [file, schema] of Object.entries(expected)) assert.equal(bundledEngine.resolve(file), schema, file);
+  for (const [file, schema] of Object.entries(expected)) {
+    assert.equal(bundledEngine.resolve(file), indexedSchemas.has(schema) ? schema : undefined, file);
+  }
 });
 
 test('files no schema covers resolve to nothing', () => {
@@ -33,7 +35,7 @@ test('a valid file has no errors', () => {
 
 test('an invalid file gets one plain error per problem', () => {
   const errors = bundledEngine.validate(SPECIES_SCHEMA, TESTMON_WITH_UNKNOWN_PROPERTY);
-  assert.deepEqual(errors.map((error) => [error.pointer, error.message]), [[['behaviour', 'moving'], "Unknown property 'fireImmune'."]]);
+  assert.deepEqual(errors.map((error) => [error.pointer, error.message]), [[[], "Unknown property 'notARealField'."]]);
 });
 
 test('check resolves and validates in one step', () => {

@@ -23,7 +23,7 @@ function packWithSpecies(species) {
 test('validate lists errors and exits 1', () => {
   const output = run('validate', packWithSpecies(TESTMON_WITH_UNKNOWN_PROPERTY));
   assert.equal(output.status, 1);
-  assert.match(output.stdout, /data\/mypack\/species\/testmon\.json\n.*Unknown property 'fireImmune'\. {2}at \/behaviour\/moving/);
+  assert.match(output.stdout, /data\/mypack\/species\/testmon\.json\n.*Unknown property 'notARealField'\.\n/);
   assert.match(output.stdout, /1 file checked: 1 error in 1 file\./);
 });
 

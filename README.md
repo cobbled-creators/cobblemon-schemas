@@ -9,9 +9,7 @@ Each Cobblemon version has its own release line:
 | Cobblemon | Install | Branch |
 |---|---|---|
 | 1.8 | `npm i @cobbled-creators/cobblemon-schemas@~1.8.0` | `main` |
-
-Older versions get a `cobblemon/<version>` branch. 1.7 is planned; its schemas are in
-cobblemon-addon-vscode at tag `v0.10.1`.
+| 1.7 | `npm i @cobbled-creators/cobblemon-schemas@~1.7.0` | `cobblemon/1.7` |
 
 Pin with `~`, not `^`: the minor version is the Cobblemon version, so `^1.7.0` would upgrade you to
 1.8's schemas. To use several versions at once, use npm aliases:
