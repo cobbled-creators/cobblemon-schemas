@@ -1,6 +1,6 @@
 {
   "name": "@cobbled-creators/cobblemon-schemas",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "JSON Schemas for Cobblemon datapack and resource pack files, and a validator that knows which schema each pack file uses. One release line per Cobblemon version.",
   "type": "module",
   "license": "MIT",
@@ -36,6 +36,8 @@
     "./bundle.json": "./dist/bundle.json",
     "./validators.mjs": "./dist/validators.mjs",
     "./schemas/*": "./schemas/*",
+    "./indexes/*": "./indexes/*",
+    "./types/*": "./types/*",
     "./package.json": "./package.json"
   },
   "bin": {
@@ -47,13 +49,16 @@
   "files": [
     "bin",
     "dist",
+    "indexes",
     "schemas",
-    "src"
+    "src",
+    "types"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "npm run build && node --test test/*.test.mjs",
     "baseline": "node scripts/baseline.mjs",
+    "indexes": "node scripts/indexes.mjs",
     "prepack": "npm run build"
   },
   "engines": {

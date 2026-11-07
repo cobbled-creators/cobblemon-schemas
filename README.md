@@ -71,13 +71,45 @@ CLI, run on the pack folder (the one holding `data/` and `assets/`):
 npx @cobbled-creators/cobblemon-schemas validate path/to/pack   # --json for machine-readable output; exits 1 on errors
 ```
 
+### Cobblemon's own content
+
+To tell a reference to stock content (`cobblemon:bulbasaur`) from a typo without a copy of Cobblemon,
+use the indexes of everything Cobblemon ships, read from the `cobblemon.baseline` tag in
+`package.json`:
+
+- `indexes/data.json`: `speciesIds`, `dexEntryIds`
+- `indexes/assets.json`: `poserIds`, `modelIds`, `animationGroupNames`, `textureIds`, `langKeys`
+
+```js
+import data from '@cobbled-creators/cobblemon-schemas/indexes/data.json' with { type: 'json' };
+
+new Set(data.speciesIds).has('cobblemon:bulbasaur'); // true
+```
+
+`CobblemonDataIndex` and `CobblemonAssetsIndex` in the main entry point describe their shape.
+
+### Move and ability types
+
+TypeScript types for Showdown move and ability files (`data/<namespace>/moves/*.ts`,
+`data/<namespace>/abilities/*.ts`):
+
+```ts
+import type { MoveData } from '@cobbled-creators/cobblemon-schemas/types/moves.d.ts';
+import type { AbilityData } from '@cobbled-creators/cobblemon-schemas/types/abilities.d.ts';
+```
+
 ## Development
 
 ```bash
 npm install
 npm test           # builds dist/ and runs the tests
 npm run baseline   # lists schema errors in Cobblemon's own data at package.json's cobblemon.baseline tag
+npm run indexes    # rewrites indexes/ from Cobblemon at package.json's cobblemon.baseline tag
 ```
+
+Both scripts read a clone of [cable-mc/cobblemon](https://gitlab.com/cable-mc/cobblemon) next to this
+repo, or pass `--cobblemon <path>`. Run `npm run indexes` whenever `cobblemon.baseline` changes: a test
+fails until you do.
 
 ## License
 

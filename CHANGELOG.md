@@ -1,10 +1,17 @@
 # Changelog
 
-## 1.7.0 (unreleased)
+## 1.7.1
 
-First release of the Cobblemon 1.7 schemas. Copied from cobblemon-addon-vscode 0.10.1 (commit
-8d1bbf9), the last extension release for Cobblemon 1.7. Cobblemon's own data validates with no errors
-at 1.7.0, 1.7.1, 1.7.2 and 1.7.3.
+Cobblemon's default content indexes and the move and ability types, moved over from
+cobblemon-addon-vscode so consumers don't need their own copy. Like the schemas, they're versioned
+with Cobblemon.
+
+- `indexes/data.json` and `indexes/assets.json`: the ids of Cobblemon's own species, dex entries,
+  posers, models, animations, textures and lang keys, read from the 1.7.3 tag (`npm run indexes`).
+  `CobblemonDataIndex` and `CobblemonAssetsIndex` describe them.
+- `types/moves.d.ts` and `types/abilities.d.ts`: types for Showdown move and ability files, matching
+  the Showdown build Cobblemon 1.7.3 bundles. `ActiveMove.status` is a `StatusCode`, like
+  `MoveData.status`, so the file type-checks.
 
 Error positions are now ranges, so editors can underline them without parsing the file again. The
 existing `line` and `column` fields are unchanged.
@@ -18,3 +25,9 @@ existing `line` and `column` fields are unchanged.
   tools can underline the same text as the CLI: the key of an unknown property or of an object or
   array, or the value otherwise. For object and array errors the reported line and column now point
   at the key instead of the opening bracket.
+
+## 1.7.0 (2026-11-06)
+
+First release of the Cobblemon 1.7 schemas. Copied from cobblemon-addon-vscode 0.10.1 (commit
+8d1bbf9), the last extension release for Cobblemon 1.7. Cobblemon's own data validates with no errors
+at 1.7.0, 1.7.1, 1.7.2 and 1.7.3.
