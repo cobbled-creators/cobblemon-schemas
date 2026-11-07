@@ -27,6 +27,10 @@ existing `line` and `column` fields are unchanged.
   array, or the value otherwise. For object and array errors the reported line and column now point
   at the key instead of the opening bracket.
 
+The package now supports Node 22 (`engines.node` is `>=22`, was `>=24`), so installing it in a
+Node 22 project such as the VS Code extension no longer warns about the engine. CI tests on Node 22
+and 24.
+
 Missing required properties at the same pointer are now one error instead of one each, so a nearly
 empty species file gets one error rather than one per field, and the CLI and editors read the same.
 
