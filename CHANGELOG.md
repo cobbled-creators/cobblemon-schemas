@@ -27,6 +27,10 @@ existing `line` and `column` fields are unchanged.
   array, or the value otherwise. For object and array errors the reported line and column now point
   at the key instead of the opening bracket.
 
+The package now supports Node 22 (`engines.node` is `>=22`, was `>=24`), so installing it in a
+Node 22 project such as the VS Code extension no longer warns about the engine. CI tests on Node 22
+and 24.
+
 ## 1.8.0 (2026-11-06)
 
 First release as its own package. The schemas were copied from cobblemon-addon-vscode (extension
