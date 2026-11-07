@@ -1,4 +1,5 @@
 import { formatAjvError } from './errors/format.mjs';
+import { groupRequiredErrors } from './errors/group-required.mjs';
 import { decodePointer } from './errors/pointer.mjs';
 import { simplifyAjvErrors } from './errors/simplify.mjs';
 import { SchemaIndex } from './schema-index.mjs';
@@ -25,19 +26,25 @@ export class SchemaEngine {
     return this.#index.resolve(packPath);
   }
 
-  validate(schemaPath, value) {
+  validate(schemaPath, value, { groupRequired = true } = {}) {
     const validator = this.#validators.get(schemaPath);
     if (!validator || validator(value)) return [];
-    return simplifyAjvErrors(validator.errors ?? [], value).map((error) => ({
+    const errors = simplifyAjvErrors(validator.errors ?? [], value).map((error) => ({
       pointer: decodePointer(error.instancePath),
       keyword: error.keyword,
-      params: error.params ?? {},
+      params: withMissingProperties(error),
       message: formatAjvError(error),
     }));
+    return groupRequired ? groupRequiredErrors(errors) : errors;
   }
 
-  check(packPath, value) {
+  check(packPath, value, options) {
     const schema = this.resolve(packPath) ?? null;
-    return { schema, errors: schema ? this.validate(schema, value) : [] };
+    return { schema, errors: schema ? this.validate(schema, value, options) : [] };
   }
+}
+
+function withMissingProperties(error) {
+  const params = error.params ?? {};
+  return error.keyword === 'required' ? { ...params, missingProperties: [params.missingProperty] } : params;
 }

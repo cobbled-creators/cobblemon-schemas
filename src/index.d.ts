@@ -57,6 +57,11 @@ export interface SchemaError {
   message: string;
 }
 
+export interface ValidateOptions {
+  /** Merge `required` errors at the same pointer. Default true. */
+  groupRequired?: boolean;
+}
+
 export type ValidateFunction = ((value: unknown) => boolean) & { errors?: unknown[] | null };
 
 export class SchemaEngine {
@@ -64,8 +69,8 @@ export class SchemaEngine {
   static fromBundle(bundle: Bundle, compiled: Record<string, ValidateFunction>): SchemaEngine;
   readonly cobblemon: CobblemonTarget | null;
   resolve(relPath: string): string | undefined;
-  validate(schemaPath: string, value: unknown): SchemaError[];
-  check(relPath: string, value: unknown): { schema: string | null; errors: SchemaError[] };
+  validate(schemaPath: string, value: unknown, options?: ValidateOptions): SchemaError[];
+  check(relPath: string, value: unknown, options?: ValidateOptions): { schema: string | null; errors: SchemaError[] };
 }
 
 export function simplifyAjvErrors<T>(errors: T[], rootData: unknown): T[];
