@@ -35,6 +35,11 @@ validatePack(readPack('path/to/pack'), engine);
 //                             line, column, offset, length, endLine, endColumn }] }]
 ```
 
+Missing required properties at the same place are one error, `Missing required properties: 'name',
+'height'.`, with every name in `params.missingProperties` (and the first in `params.missingProperty`).
+Pass `{ groupRequired: false }` to `engine.validate` or `engine.check` to get one error per property
+instead; `validatePack` and the CLI always group.
+
 Error positions are 1-based `line`/`column`, plus `offset`/`length` into the text (without any byte
 order mark) and an exclusive `endLine`/`endColumn`. To place errors from `engine.check` in an editor,
 parse the file with `parseJson` and pass each error to `locateError`. It returns the same range

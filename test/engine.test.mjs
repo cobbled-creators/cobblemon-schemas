@@ -49,3 +49,52 @@ test('the precompiled bundle and live ajv agree', () => {
     assert.deepEqual(bundledEngine.validate(SPECIES_SCHEMA, value), liveEngine.validate(SPECIES_SCHEMA, value));
   }
 });
+
+test('missing required properties at one pointer are one error', () => {
+  const errors = bundledEngine.validate(SPECIES_SCHEMA, { name: 'x' });
+  assert.equal(errors.length, 1);
+  const [error] = errors;
+  assert.deepEqual([error.pointer, error.keyword], [[], 'required']);
+  assert.ok(error.params.missingProperties.length > 1);
+  assert.ok(!error.params.missingProperties.includes('name'));
+  assert.equal(error.params.missingProperty, error.params.missingProperties[0]);
+  assert.equal(error.message, `Missing required properties: ${error.params.missingProperties.map((name) => `'${name}'`).join(', ')}.`);
+  assert.match(error.message, /^Missing required properties: 'nationalPokedexNumber', 'primaryType', 'maleRatio', /);
+});
+
+test('groupRequired: false gives one error per missing property', () => {
+  const [grouped] = bundledEngine.validate(SPECIES_SCHEMA, { name: 'x' });
+  const errors = bundledEngine.validate(SPECIES_SCHEMA, { name: 'x' }, { groupRequired: false });
+  assert.deepEqual(errors.map((error) => error.params.missingProperties), grouped.params.missingProperties.map((name) => [name]));
+  for (const error of errors) {
+    assert.deepEqual([error.pointer, error.keyword], [[], 'required']);
+    assert.equal(error.message, `Missing required property '${error.params.missingProperty}'.`);
+  }
+  assert.deepEqual(bundledEngine.check('data/x/species/a.json', { name: 'x' }, { groupRequired: false }).errors, errors);
+});
+
+const { name, height, ...TESTMON_WITHOUT_NAME_AND_HEIGHT } = TESTMON;
+const MIXED_ERRORS = { ...TESTMON_WITHOUT_NAME_AND_HEIGHT, baseStats: {}, notARealField: true, catchRate: 'x' };
+
+test('required errors at different pointers are not merged', () => {
+  const required = bundledEngine.validate(SPECIES_SCHEMA, MIXED_ERRORS).filter((error) => error.keyword === 'required');
+  assert.deepEqual(required.map((error) => [error.pointer, error.params.missingProperties]), [
+    [[], ['name', 'height']],
+    [['baseStats'], ['hp', 'attack', 'defence', 'special_attack', 'special_defence', 'speed']],
+  ]);
+  assert.equal(required[0].message, "Missing required properties: 'name', 'height'.");
+});
+
+test('grouping leaves other errors and their order alone', () => {
+  const grouped = bundledEngine.validate(SPECIES_SCHEMA, MIXED_ERRORS);
+  const ungrouped = bundledEngine.validate(SPECIES_SCHEMA, MIXED_ERRORS, { groupRequired: false });
+  assert.deepEqual(grouped.map((error) => [error.pointer, error.keyword]), [
+    [[], 'required'],
+    [[], 'additionalProperties'],
+    [['baseStats'], 'required'],
+    [['catchRate'], 'type'],
+  ]);
+  const others = (errors) => errors.filter((error) => error.keyword !== 'required');
+  assert.deepEqual(others(grouped), others(ungrouped));
+  assert.deepEqual(others(grouped).map((error) => error.message), ["Unknown property 'notARealField'.", "Expected type 'integer'."]);
+});
