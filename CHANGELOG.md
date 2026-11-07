@@ -27,6 +27,16 @@ existing `line` and `column` fields are unchanged.
   array, or the value otherwise. For object and array errors the reported line and column now point
   at the key instead of the opening bracket.
 
+Missing required properties at the same pointer are now one error instead of one each, so a nearly
+empty species file gets one error rather than one per field, and the CLI and editors read the same.
+
+- The message lists every name, without truncating:
+  `Missing required properties: 'primaryType', 'maleRatio', 'height'.` With one name it's unchanged.
+- Every `required` error has `params.missingProperties`, the missing names in order.
+  `params.missingProperty` is still set, to the first of them.
+- `engine.validate` and `engine.check` take `{ groupRequired: false }` to get one error per property,
+  as before. `validatePack` and the CLI always group.
+
 ## 1.8.0 (2026-11-06)
 
 First release as its own package. The schemas were copied from cobblemon-addon-vscode (extension
