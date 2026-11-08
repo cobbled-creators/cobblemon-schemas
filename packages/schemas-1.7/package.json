@@ -1,6 +1,6 @@
 {
   "name": "@cobbled-creators/cobblemon-schemas",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "JSON Schemas for Cobblemon 1.7 datapack and resource pack files, prebuilt for @cobbled-creators/cobblemon-validator, plus indexes of Cobblemon's own content. One release line per Cobblemon version.",
   "type": "module",
   "license": "MIT",
