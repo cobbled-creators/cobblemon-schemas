@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.7.2
+## 1.7.2 (2026-11-08)
 
 - `types/moves.d.ts` and `types/abilities.d.ts` are generated from the Showdown bundled with Cobblemon
   1.7.3 (cable-mc/cobblemon-showdown `72b96a4`) and list every callback it declares, with its signature

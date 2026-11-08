@@ -1,6 +1,6 @@
 {
   "name": "@cobbled-creators/cobblemon-validator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Validates Cobblemon datapack and resource pack files against a @cobbled-creators/cobblemon-schemas package: works out which schema a file uses and reports one plain error per problem, with positions.",
   "type": "module",
   "license": "MIT",
