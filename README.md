@@ -79,18 +79,48 @@ node scripts/test.mjs --package 1.7    # one package (engine, 1.7, schemas-1.7 o
 npm run build                          # builds every schema package's dist/
 npm run baseline -- --package 1.8      # schema errors in Cobblemon's own data at that package's cobblemon.baseline tag
 npm run indexes -- --package 1.8       # rewrites that package's indexes/ from Cobblemon at its cobblemon.baseline tag
+npm run types -- --package 1.8         # rewrites that package's types/moves.d.ts and abilities.d.ts from the Showdown in that tag
 ```
 
-`--all` works for `baseline` and `indexes` too. Both read a clone of
+`--all` works for `baseline`, `indexes` and `types` too. All three read a clone of
 [cable-mc/cobblemon](https://gitlab.com/cable-mc/cobblemon): `--cobblemon <path>`, else
 `$COBBLEMON_CHECKOUT`, else `../cable/cobblemon` or `../cobblemon` next to this repo. Run `npm run
-indexes` whenever a package's `cobblemon.baseline` changes: the build fails until you do.
+indexes` and `npm run types` whenever a package's `cobblemon.baseline` changes: the build fails until you do.
 
 The engine's tests are in `packages/engine/test` and run against a tiny fixture schema package. The
 schema packages are data, so they have no tests. Building one is its check: the build compiles every
 schema with the engine, and it fails if the package's folder, version and baseline disagree, if an
-indexed schema has no validator, or if the indexes are from another Cobblemon tag. It then loads the
+indexed schema has no validator, or if the indexes or types are from another Cobblemon tag. It then loads the
 result with the engine. CI builds every schema package, so an engine change can't break one unnoticed.
+
+### Move and ability types
+
+A schema package's `types/moves.d.ts` and `types/abilities.d.ts` are generated, and both hold the
+same declarations. `npm run types` takes the Showdown that Cobblemon bundles at the package's
+baseline tag (`data/cobblemon/showdown.zip`, a build of
+[cable-mc/cobblemon-showdown](https://gitlab.com/cable-mc/cobblemon-showdown)) and recovers its
+TypeScript from the source maps. It copies Showdown's callback interfaces (`MoveEventMethods`,
+`EventMethods`, `PokemonEventMethods`, …, `ConditionData`, `AbilityEventMethods`) as they're
+declared, and adds them after the package's hand-written `types-src/support.d.ts` (`Battle`,
+`Pokemon`, `CommonHandlers`, `MoveData`'s fields and so on). To change the types, edit those
+inputs, not the output:
+
+- `types-src/support.d.ts`, for anything that isn't a Showdown callback. The files must type-check
+  with only `lib.es5.d.ts`, so no `Set`, `Map` or `Promise`. Callbacks in `HitEffect`, `MoveData`
+  and `AbilityData` must match Showdown's.
+- `scripts/callback-descriptions.json`, for the one-line JSDoc each callback gets. It's keyed by
+  event, so `ModifyAtk` describes `onModifyAtk`, and `prefixes` turns that into `onFoeModifyAtk`,
+  `onSourceModifyAtk` and the rest. `ordering` covers `…Priority`, `…Order` and `…SubOrder`.
+  `members` overrides a name, or `Interface.name` where a name means different things in
+  different places.
+
+`npm run types` writes nothing unless the result type-checks on its own (`noLib` plus
+`lib.es5.d.ts`, the extension's settings) and Showdown's own `data/moves.ts`, `abilities.ts` and
+`conditions.ts` type-check against it, ignoring callback bodies. The build can't rerun that, because CI
+has no Cobblemon clone. Instead it checks that each file's `@generated` header names the baseline tag
+and the current inputs, and that the file hasn't been edited since. It also checks that the files
+type-check alone, that a misspelt `onHitt` or `onStrat` gets a "Did you mean", that every callback has
+a description, and that no description is unused.
 
 ### Error messages
 
@@ -126,7 +156,8 @@ there's no annotation, and keeps that in `defaultMessage` where there is one.
 2. In its `package.json`, set `version` to `1.9.0` and the `cobblemon` block to the new version,
    Minecraft version and baseline tag. Update `repository.directory`, the description and the README.
 3. `npm run indexes -- --package 1.9`, then `npm run baseline -- --package 1.9`. Fix the schemas until
-   the baseline is clean, and update `types/` if Showdown changed.
+   the baseline is clean. Run `npm run types -- --package 1.9`, and update `types-src/support.d.ts` or
+   `scripts/callback-descriptions.json` if Showdown changed.
 4. Update the examples in `types/indexes.d.ts` if they changed, then run `npm test`.
 
 CI picks the new folder up by itself, and the new line becomes `latest` when it's published.

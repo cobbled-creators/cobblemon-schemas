@@ -10,9 +10,13 @@
     "build": "node scripts/build.mjs --all",
     "test": "node scripts/test.mjs --all",
     "baseline": "node scripts/baseline.mjs",
-    "indexes": "node scripts/indexes.mjs"
+    "indexes": "node scripts/indexes.mjs",
+    "types": "node scripts/types.mjs"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
   }
 }

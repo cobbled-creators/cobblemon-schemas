@@ -2,6 +2,21 @@
 
 ## 1.7.2
 
+- `types/moves.d.ts` and `types/abilities.d.ts` are generated from the Showdown bundled with Cobblemon
+  1.7.3 (cable-mc/cobblemon-showdown `72b96a4`) and list every callback it declares, with its signature
+  and a one-line description: 504 callback names across moves, conditions and abilities. Move, condition and ability
+  objects no longer accept any `on…` key, so a typo such as `onHitt` is an error that suggests `onHit`.
+- `ConditionData` is `PokemonConditionData | SideConditionData | FieldConditionData`, as in Showdown,
+  and accepts `name` and `counterMax`. `AbilityData.condition` is a `ConditionData`.
+- `MoveData` and `AbilityData` are interfaces rather than intersections. `abilities.d.ts` now has the
+  same declarations as `moves.d.ts`, so ability callbacks are typed (they were `this: any`).
+- Removed `GenericMoveCallback`, `GenericConditionCallback`, the eight `…MoveCallback` types,
+  `AbilityCallback`, `AbilityCallbackValue` and `AbilityConditionData`. Use `CommonHandlers['ResultMove']`
+  and friends, or `MoveData['onHit']`.
+- The files type-check with only `lib.es5.d.ts` again: `Choice.switchIns` and `Battle.hints` no longer
+  use `Set`. `AnyObject`, `EffectState`, `Battle.runEvent` and `singleEvent` use `any` as Showdown does, and
+  `Pokemon.addVolatile` and `Battle.getAtSlot` have Showdown's return types. Callbacks written like
+  Showdown's own no longer fail to type-check because of them.
 - Error messages for integer ranges (`intRange`, `intRangeString`, such as a spawn's `level`) and for
   identifiers, resource locations and tags now say what format is expected, with an example, through
   `x-errorMessage` annotations. They show with `@cobbled-creators/cobblemon-validator` 0.2.0 or

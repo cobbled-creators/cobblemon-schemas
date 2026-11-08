@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildSchemaPackage, loadEngine } from '@cobbled-creators/cobblemon-validator/node';
 import { selectPackages } from './packages.mjs';
+import { typeProblems, unusedDescriptions } from './types-check.mjs';
 
 const readJson = (...segments) => JSON.parse(fs.readFileSync(path.join(...segments), 'utf8'));
 const sizeOf = (dist, name) => `${name} ${Math.round(fs.statSync(path.join(dist, name)).size / 1024)} KB`;
@@ -23,7 +24,7 @@ function problemsWith(pkg) {
     const from = readJson(pkg.dir, 'indexes', name).cobblemon;
     if (from !== baseline) problems.push(`indexes/${name} is from ${from}, not ${baseline}: run npm run indexes -- --package ${version}`);
   }
-  return problems;
+  return [...problems, ...typeProblems(pkg)];
 }
 
 let failed = false;
@@ -38,4 +39,7 @@ for (const pkg of selectPackages(process.argv.slice(2))) {
   for (const problem of problems) console.error(`  ${pkg.folder}: ${problem}`);
   failed ||= problems.length > 0;
 }
-process.exit(failed ? 1 : 0);
+
+const unused = unusedDescriptions();
+if (unused.length) console.error(`  scripts/callback-descriptions.json has entries no package uses: ${unused.join(', ')}`);
+process.exit(failed || unused.length ? 1 : 0);
