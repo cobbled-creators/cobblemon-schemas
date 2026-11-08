@@ -1,53 +1,41 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import standaloneCode from 'ajv/dist/standalone/index.js';
-import { loadSchemas } from '../src/node/load-schemas.mjs';
-import { cobblemon, distRoot, packageJson } from '../src/node/package-info.mjs';
+import { buildSchemaPackage, loadEngine } from '@cobbled-creators/cobblemon-validator/node';
+import { selectPackages } from './packages.mjs';
 
-const STANDALONE_OPTIONS = { code: { source: true, esm: true, optimize: true } };
+const readJson = (...segments) => JSON.parse(fs.readFileSync(path.join(...segments), 'utf8'));
+const sizeOf = (dist, name) => `${name} ${Math.round(fs.statSync(path.join(dist, name)).size / 1024)} KB`;
 
-function nameValidators(ajv, entries) {
-  const exportedIds = {};
-  const namedEntries = entries.map((entry, i) => {
-    if (!entry.id || !ajv.getSchema(entry.id)) return entry;
-    const name = `v${i}`;
-    exportedIds[name] = entry.id;
-    return { ...entry, validator: name };
-  });
-  return { exportedIds, namedEntries };
+function problemsWith(pkg) {
+  const { version, baseline } = pkg.cobblemon;
+  const problems = [];
+  if (pkg.folder !== `schemas-${version}`) problems.push(`its folder should be schemas-${version}, for cobblemon.version ${version}`);
+  if (!pkg.version.startsWith(`${version}.`)) problems.push(`version ${pkg.version} should be ${version}.x`);
+  if (!baseline.startsWith(`${version}.`)) problems.push(`cobblemon.baseline ${baseline} should be ${version}.x`);
+
+  const bundled = new Map(readJson(pkg.dir, 'dist', 'bundle.json').entries.map((entry) => [entry.path, entry]));
+  for (const entry of readJson(pkg.dir, 'schemas', 'index.json').schemas) {
+    if (!fs.existsSync(path.join(pkg.dir, entry.path))) problems.push(`schemas/index.json lists ${entry.path}, which doesn't exist`);
+    else if (!entry.path.startsWith('schemas/_shared/') && !bundled.get(entry.path)?.validator) problems.push(`${entry.path} has no validator (check its $id)`);
+  }
+
+  for (const name of ['data.json', 'assets.json']) {
+    const from = readJson(pkg.dir, 'indexes', name).cobblemon;
+    if (from !== baseline) problems.push(`indexes/${name} is from ${from}, not ${baseline}: run npm run indexes -- --package ${version}`);
+  }
+  return problems;
 }
 
-function requiresToImports(code) {
-  const imports = [];
-  const withoutDefaultRequires = code.replace(/const (\w+) = require\("([^"]+)"\)\.default;/g, (_, name, module) => {
-    imports.push(`import ${name}__mod from "${module}.js";\nconst ${name} = ${name}__mod.default ?? ${name}__mod;`);
-    return '';
-  });
-  const withoutRequires = withoutDefaultRequires.replace(/const (\w+) = require\("([^"]+)"\);/g, (_, name, module) => {
-    imports.push(`import ${name} from "${module}.js";`);
-    return '';
-  });
-  if (/\brequire\(/.test(withoutRequires)) throw new Error('Standalone validator code still contains require() calls.');
-  return `${imports.join('\n')}\n${withoutRequires}`;
+let failed = false;
+for (const pkg of selectPackages(process.argv.slice(2))) {
+  const started = Date.now();
+  const { dist, validatorCount } = buildSchemaPackage(pkg.dir);
+  await loadEngine({ schemas: pkg.dir });
+
+  const problems = problemsWith(pkg);
+  const sizes = ['validators.mjs', 'bundle.json'].map((name) => sizeOf(dist, name)).join(', ');
+  console.log(`${pkg.folder}/dist: ${validatorCount} validators for Cobblemon ${pkg.cobblemon.version} (${sizes}) in ${Date.now() - started} ms`);
+  for (const problem of problems) console.error(`  ${pkg.folder}: ${problem}`);
+  failed ||= problems.length > 0;
 }
-
-function writeDist(files) {
-  fs.mkdirSync(distRoot, { recursive: true });
-  for (const [name, content] of Object.entries(files)) fs.writeFileSync(path.join(distRoot, name), content);
-}
-
-function sizeOf(name) {
-  return `${Math.round(fs.statSync(path.join(distRoot, name)).size / 1024)} KB`;
-}
-
-const started = Date.now();
-const { ajv, entries } = loadSchemas(undefined, STANDALONE_OPTIONS);
-const { exportedIds, namedEntries } = nameValidators(ajv, entries);
-
-writeDist({
-  'validators.mjs': requiresToImports(standaloneCode(ajv, exportedIds)),
-  'bundle.json': JSON.stringify({ package: packageJson.version, cobblemon, entries: namedEntries }),
-});
-
-const sizes = `validators.mjs ${sizeOf('validators.mjs')}, bundle.json ${sizeOf('bundle.json')}`;
-console.log(`dist/: ${Object.keys(exportedIds).length} validators for Cobblemon ${cobblemon.version} (${sizes}) in ${Date.now() - started} ms`);
+process.exit(failed ? 1 : 0);

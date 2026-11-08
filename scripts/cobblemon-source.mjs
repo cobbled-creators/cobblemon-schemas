@@ -1,28 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { cobblemon, packageRoot } from '../src/node.mjs';
+import { repoRoot, valueOf } from './packages.mjs';
 
 // Reads Cobblemon's bundled resources out of a local clone of https://gitlab.com/cable-mc/cobblemon,
-// either at a git revision (package.json's cobblemon.baseline tag by default) or from the working tree.
+// either at a git revision (a schema package's cobblemon.baseline tag by default) or from the working tree.
 
 const RESOURCES = 'common/src/main/resources/';
 const DEFAULT_CHECKOUTS = ['../cable/cobblemon', '../cobblemon'];
 const MAX_GIT_OUTPUT = 1024 * 1024 * 1024;
 
-export function parseSourceOptions(args) {
-  const valueOf = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
-  const checkout = valueOf('--cobblemon') ?? findCheckout();
+export function parseSourceOptions(args, pkg) {
+  const checkout = valueOf(args, '--cobblemon') ?? process.env.COBBLEMON_CHECKOUT ?? findCheckout();
   if (!checkout) {
-    console.error('No Cobblemon checkout found. Clone https://gitlab.com/cable-mc/cobblemon next to this repo, or pass --cobblemon <path>.');
+    console.error('No Cobblemon checkout found. Clone https://gitlab.com/cable-mc/cobblemon next to this repo, set COBBLEMON_CHECKOUT, or pass --cobblemon <path>.');
     process.exit(2);
   }
-  return { checkout, rev: valueOf('--rev') ?? cobblemon.baseline, worktree: args.includes('--worktree') };
+  return { checkout, rev: valueOf(args, '--rev') ?? pkg.cobblemon.baseline, worktree: args.includes('--worktree') };
 }
 
 function findCheckout() {
   return DEFAULT_CHECKOUTS
-    .map((candidate) => path.resolve(packageRoot, candidate))
+    .map((candidate) => path.resolve(repoRoot, candidate))
     .find((candidate) => fs.existsSync(path.join(candidate, RESOURCES)));
 }
 

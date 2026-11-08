@@ -1,120 +1,121 @@
-# @cobbled-creators/cobblemon-schemas
+# cobblemon-schemas
 
-JSON Schemas for Cobblemon datapack and resource pack files, and a small validator: it works out
-which schema a pack file uses, validates it, and reports one plain error per problem, with line
-numbers.
+JSON Schemas for Cobblemon datapack and resource pack files, and a validator that works out which
+schema a pack file uses, validates it, and reports one plain error per problem, with line numbers.
 
-Each Cobblemon version has its own release line:
+This repo publishes two kinds of package:
 
-| Cobblemon | Install | Branch |
+| Package | What it is | Folder |
 |---|---|---|
-| 1.8 | `npm i @cobbled-creators/cobblemon-schemas@~1.8.0` | `main` |
-| 1.7 | `npm i @cobbled-creators/cobblemon-schemas@~1.7.0` | `cobblemon/1.7` |
+| [`@cobbled-creators/cobblemon-validator`](packages/engine) | The engine: schema resolution, validation, error messages and positions. Works with any Cobblemon version. | `packages/engine` |
+| [`@cobbled-creators/cobblemon-schemas`](packages/schemas-1.8) `~1.8.0` | The schemas for Cobblemon 1.8, prebuilt for the engine, plus indexes of Cobblemon's own content and move/ability types. | `packages/schemas-1.8` |
+| [`@cobbled-creators/cobblemon-schemas`](packages/schemas-1.7) `~1.7.0` | The same for Cobblemon 1.7. | `packages/schemas-1.7` |
 
-Pin with `~`, not `^`: the minor version is the Cobblemon version, so `^1.7.0` would upgrade you to
-1.8's schemas. To use several versions at once, use npm aliases:
-
-```json
-"cobblemon-schemas-1.8": "npm:@cobbled-creators/cobblemon-schemas@~1.8.0",
-"cobblemon-schemas-1.7": "npm:@cobbled-creators/cobblemon-schemas@~1.7.0"
-```
+The schema package's version follows Cobblemon: 1.8.x is Cobblemon 1.8, 1.7.x is Cobblemon 1.7. The
+newest line is npm's `latest`. Older lines are under a `cobblemon-<x.y>` dist-tag.
 
 ## Use
 
-Node:
-
-```js
-import { loadEngine, readPack, validatePack } from '@cobbled-creators/cobblemon-schemas/node';
-
-const engine = await loadEngine();
-engine.resolve('data/mypack/species/foo.json');      // 'schemas/species/schema.json'
-engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message }] }
-
-validatePack(readPack('path/to/pack'), engine);
-// [{ file, schema, errors: [{ kind: 'syntax' | 'schema', message, pointer,
-//                             line, column, offset, length, endLine, endColumn }] }]
-```
-
-Missing required properties at the same place are one error, `Missing required properties: 'name',
-'height'.`, with every name in `params.missingProperties` (and the first in `params.missingProperty`).
-Pass `{ groupRequired: false }` to `engine.validate` or `engine.check` to get one error per property
-instead; `validatePack` and the CLI always group.
-
-Error positions are 1-based `line`/`column`, plus `offset`/`length` into the text (without any byte
-order mark) and an exclusive `endLine`/`endColumn`. To place errors from `engine.check` in an editor,
-parse the file with `parseJson` and pass each error to `locateError`. It returns the same range
-`validatePack` reports: the key of an unknown property or of an object or array, or the value
-otherwise.
-
-```js
-import { locateError, parseJson } from '@cobbled-creators/cobblemon-schemas';
-
-const parsed = parseJson(text);
-parsed.syntaxErrors;                          // [{ message, line, column, offset, length, endLine, endColumn }]
-parsed.locate(['stats', 'hp']);               // range of the value
-parsed.locate(['stats', 'hp'], { key: true }); // range of the key; array elements and the root fall back to the value
-engine.validate(schema, parsed.value).map((error) => ({ ...error, ...locateError(parsed, error) }));
-```
-
-Browser: the main entry point has no Node APIs, and the validators are precompiled (no `eval`), so it
-works under a strict Content-Security-Policy.
-
-```js
-import { SchemaEngine } from '@cobbled-creators/cobblemon-schemas';
-import bundle from '@cobbled-creators/cobblemon-schemas/bundle.json' with { type: 'json' };
-import * as validators from '@cobbled-creators/cobblemon-schemas/validators.mjs';
-
-const engine = SchemaEngine.fromBundle(bundle, validators);
-```
-
-The schemas themselves are at `@cobbled-creators/cobblemon-schemas/schemas/<type>/schema.json`, listed in
-`schemas/index.json`.
-
-CLI, run on the pack folder (the one holding `data/` and `assets/`):
+Install the engine plus the schemas for your Cobblemon version, pinned with `~` (`^1.7.0` would
+upgrade you to 1.8's schemas):
 
 ```bash
-npx @cobbled-creators/cobblemon-schemas validate path/to/pack   # --json for machine-readable output; exits 1 on errors
+npm i @cobbled-creators/cobblemon-validator @cobbled-creators/cobblemon-schemas@~1.8.0
 ```
-
-### Cobblemon's own content
-
-To tell a reference to stock content (`cobblemon:bulbasaur`) from a typo without a copy of Cobblemon,
-use the indexes of everything Cobblemon ships, read from the `cobblemon.baseline` tag in
-`package.json`:
-
-- `indexes/data.json`: `speciesIds`, `dexEntryIds`
-- `indexes/assets.json`: `poserIds`, `modelIds`, `animationGroupNames`, `textureIds`, `langKeys`
 
 ```js
-import data from '@cobbled-creators/cobblemon-schemas/indexes/data.json' with { type: 'json' };
+import { loadEngine, readPack, validatePack } from '@cobbled-creators/cobblemon-validator/node';
 
-new Set(data.speciesIds).has('cobblemon:bulbasaur'); // true
+const engine = await loadEngine({ schemas: '@cobbled-creators/cobblemon-schemas' });
+validatePack(readPack('path/to/pack'), engine);
 ```
 
-`CobblemonDataIndex` and `CobblemonAssetsIndex` in the main entry point describe their shape.
+To support several Cobblemon versions, install each under an npm alias and create one engine per
+version:
 
-### Move and ability types
-
-TypeScript types for Showdown move and ability files (`data/<namespace>/moves/*.ts`,
-`data/<namespace>/abilities/*.ts`):
-
-```ts
-import type { MoveData } from '@cobbled-creators/cobblemon-schemas/types/moves.d.ts';
-import type { AbilityData } from '@cobbled-creators/cobblemon-schemas/types/abilities.d.ts';
+```json
+"@cobbled-creators/cobblemon-validator": "^0.1.0",
+"cobblemon-schemas-1.7": "npm:@cobbled-creators/cobblemon-schemas@~1.7.0",
+"cobblemon-schemas-1.8": "npm:@cobbled-creators/cobblemon-schemas@~1.8.0"
 ```
+
+```js
+const engine17 = await loadEngine({ schemas: 'cobblemon-schemas-1.7' });
+const engine18 = await loadEngine({ schemas: 'cobblemon-schemas-1.8' });
+```
+
+The [engine's README](packages/engine/README.md) covers the whole API, error positions and the
+browser/bundler setup. The [schema package's README](packages/schemas-1.8/README.md) covers the
+indexes and types.
+
+## Migrating from 1.8.0 / 1.7.0
+
+Up to 1.8.0 and 1.7.0, `@cobbled-creators/cobblemon-schemas` contained the engine too. From 1.8.1
+and 1.7.1 on, it's only the schemas, indexes, types and prebuilt bundle, and the engine is
+`@cobbled-creators/cobblemon-validator`. The new engine can't read 1.8.0's or 1.7.0's bundle. Use it
+with 1.8.1 / 1.7.1 or later.
+
+| Before | After |
+|---|---|
+| `import { SchemaEngine, parseJson, locateError, validatePack, … } from '@cobbled-creators/cobblemon-schemas'` | the same names from `@cobbled-creators/cobblemon-validator` |
+| `loadEngine()` from `@cobbled-creators/cobblemon-schemas/node` | `loadEngine({ schemas: '@cobbled-creators/cobblemon-schemas' })` from `@cobbled-creators/cobblemon-validator/node` (or an alias such as `'cobblemon-schemas-1.8'`) |
+| `loadEngine({ live: true })` | `loadEngine({ schemas, live: true })` |
+| `readPack`, `validatePack` from `…/node` | unchanged, from `@cobbled-creators/cobblemon-validator/node` |
+| `loadSchemas()` | `loadSchemas(path.join(resolveSchemaPackage(schemas).root, 'schemas'))` |
+| `packageRoot`, `schemaRoot`, `cobblemon` from `…/node` | `resolveSchemaPackage(schemas).root` and `.cobblemon`, or `engine.cobblemon` |
+| `CobblemonDataIndex`, `CobblemonAssetsIndex` from the main entry | `@cobbled-creators/cobblemon-schemas/types/indexes.d.ts` |
+| `…/bundle.json`, `…/validators.mjs`, `…/schemas/*`, `…/indexes/*`, `…/types/*` | unchanged, still on `@cobbled-creators/cobblemon-schemas`. `bundle.json` now has a `formatVersion`, and its `package` is `{ name, version }` |
+| `npx @cobbled-creators/cobblemon-schemas validate <pack>` | removed for now. Use `validatePack(readPack(dir), await loadEngine({ schemas }))` |
 
 ## Development
 
+There's one npm workspace, `packages/engine`. The schema packages all share the name
+`@cobbled-creators/cobblemon-schemas`, which npm doesn't allow for workspaces. Since they have no
+dependencies, they're plain folders that the root scripts build and test.
+
 ```bash
-npm install
-npm test           # builds dist/ and runs the tests
-npm run baseline   # lists schema errors in Cobblemon's own data at package.json's cobblemon.baseline tag
-npm run indexes    # rewrites indexes/ from Cobblemon at package.json's cobblemon.baseline tag
+npm ci
+npm test                               # the engine's tests, then every schema package built and checked
+node scripts/test.mjs --package 1.7    # one package (engine, 1.7, schemas-1.7 or a path); also `npm test` inside a package
+npm run build                          # builds every schema package's dist/
+npm run baseline -- --package 1.8      # schema errors in Cobblemon's own data at that package's cobblemon.baseline tag
+npm run indexes -- --package 1.8       # rewrites that package's indexes/ from Cobblemon at its cobblemon.baseline tag
 ```
 
-Both scripts read a clone of [cable-mc/cobblemon](https://gitlab.com/cable-mc/cobblemon) next to this
-repo, or pass `--cobblemon <path>`. Run `npm run indexes` whenever `cobblemon.baseline` changes: a test
-fails until you do.
+`--all` works for `baseline` and `indexes` too. Both read a clone of
+[cable-mc/cobblemon](https://gitlab.com/cable-mc/cobblemon): `--cobblemon <path>`, else
+`$COBBLEMON_CHECKOUT`, else `../cable/cobblemon` or `../cobblemon` next to this repo. Run `npm run
+indexes` whenever a package's `cobblemon.baseline` changes: the build fails until you do.
+
+The engine's tests are in `packages/engine/test` and run against a tiny fixture schema package. The
+schema packages are data, so they have no tests. Building one is its check: the build compiles every
+schema with the engine, and it fails if the package's folder, version and baseline disagree, if an
+indexed schema has no validator, or if the indexes are from another Cobblemon tag. It then loads the
+result with the engine. CI builds every schema package, so an engine change can't break one unnoticed.
+
+### Adding a Cobblemon version
+
+1. Copy the newest folder, for example `packages/schemas-1.8` to `packages/schemas-1.9`. Leave out
+   `dist/`, and start its `CHANGELOG.md` afresh.
+2. In its `package.json`, set `version` to `1.9.0` and the `cobblemon` block to the new version,
+   Minecraft version and baseline tag. Update `repository.directory`, the description and the README.
+3. `npm run indexes -- --package 1.9`, then `npm run baseline -- --package 1.9`. Fix the schemas until
+   the baseline is clean, and update `types/` if Showdown changed.
+4. Update the examples in `types/indexes.d.ts` if they changed, then run `npm test`.
+
+CI picks the new folder up by itself, and the new line becomes `latest` when it's published.
+
+### Releasing
+
+Push a tag. `.github/workflows/publish.yml` runs every package's tests, then publishes the tagged
+package with npm provenance:
+
+- `engine-v0.1.0` publishes `packages/engine` (dist-tag `latest`, or `next` for a prerelease).
+- `schemas-v1.8.1` publishes `packages/schemas-1.8`: `latest` if it's the newest Cobblemon line,
+  otherwise `cobblemon-1.8`.
+
+The tag has to match the package's `version`. `node scripts/release.mjs <tag>` shows what a tag
+would publish.
 
 ## License
 

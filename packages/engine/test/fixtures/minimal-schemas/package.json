@@ -1,0 +1,16 @@
+{
+  "name": "@cobbled-creators/cobblemon-schemas",
+  "version": "0.0.0-fixture",
+  "private": true,
+  "description": "A tiny stand-in schema package for the engine's own tests.",
+  "cobblemon": {
+    "version": "0.0",
+    "minecraft": "1.21.1",
+    "baseline": "0.0.0"
+  },
+  "exports": {
+    "./bundle.json": "./dist/bundle.json",
+    "./validators.mjs": "./dist/validators.mjs",
+    "./package.json": "./package.json"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schemas": [
+    {
+      "name": "_shared/common",
+      "path": "schemas/_shared/common.schema.json",
+      "$id": "https://cobblemon-schema.local/fixture/_shared/common.schema.json"
+    },
+    {
+      "name": "species",
+      "path": "schemas/species/schema.json",
+      "$id": "https://cobblemon-schema.local/fixture/species/schema.json"
+    }
+  ]
+}
