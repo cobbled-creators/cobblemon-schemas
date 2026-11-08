@@ -47,7 +47,10 @@ export interface LoadEngineOptions extends ResolveOptions {
 
 export function loadEngine(options: LoadEngineOptions): Promise<SchemaEngine>;
 
-/** Compiles every schema under a schema package's `schemas/` folder. */
+/**
+ * Compiles every schema under a schema package's `schemas/` folder. Throws an error with `code`
+ * `ERR_COBBLEMON_ANNOTATION`, and every problem in `problems`, if an `x-errorMessage` annotation is invalid.
+ */
 export function loadSchemas(schemasDir: string, ajvOptions?: Record<string, unknown>): { ajv: import('ajv/dist/2020.js').default; entries: SchemaEntry[] };
 
 /** For building schema packages: the contents of `dist/bundle.json`, `dist/validators.mjs` and `dist/validators.d.mts`. */

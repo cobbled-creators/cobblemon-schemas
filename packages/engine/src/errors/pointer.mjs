@@ -16,6 +16,10 @@ export function isBelow(pointer, ancestor) {
   return pointer.startsWith(ancestor ? `${ancestor}/` : '/');
 }
 
+export function isAtOrBelow(pointer, ancestor) {
+  return pointer === ancestor || isBelow(pointer, ancestor);
+}
+
 export function valueAt(root, pointer) {
   let current = root;
   for (const segment of decodePointer(pointer)) {

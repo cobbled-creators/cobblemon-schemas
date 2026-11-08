@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.2.0
+
+Clearer error messages, and room for schema packages to add their own (#13).
+
+- Schema packages can annotate their schemas with `x-errorMessage`, a message written by someone who
+  knows the file format, saying what's wrong and how to fix it. Where one applies, it's the error's
+  `message`, and the engine's built-in message moves to the new `defaultMessage`. Otherwise
+  `defaultMessage` is absent. Annotations reach the prebuilt validators as part of the schemas, so
+  `bundle.json` and its `formatVersion` are unchanged. Older engines ignore them, and older schema
+  packages simply have none. The repo README's "Error messages" explains how to write them.
+- `loadSchemas`, and so `compileBundle`, `buildSchemaPackage` and `loadEngine({ live: true })`,
+  reject an annotation that can never apply or that uses an unknown placeholder, with code
+  `ERR_COBBLEMON_ANNOTATION` and every problem in `error.problems`.
+- A union whose alternatives all reject a value's shape is one error, not one per alternative:
+  `Expected an integer, a string matching ^-?\d+(?:--?\d+)?$, or an object.` instead of three
+  errors such as `Expected type 'integer'.` and `Expected type 'object'.`.
+- A union of single required properties is one error that asks for one of them:
+  `Missing one of these properties: 'spawnablePositionType', 'context'.`, not "missing all of them".
+- Bounds, lengths, item counts and patterns have plain messages instead of ajv's: `Must be at least
+  1.` instead of `must be >= 1`, `Must not be empty.`, `"zero" doesn't match the expected format …`.
+- An unknown property or enum value that's a near miss of an allowed one says so: `Unknown property
+  'basestats'. Did you mean 'baseStats'?` An enum list cut at 8 values says how many more there are.
+- Fixed: in a union picked by `type`, such as a spawn's `pokemon` / `pokemon-herd` / `npc` / `empty`,
+  a mistake in the shared part (a spawn without `spawnablePositionType` or `context`) also reported
+  every other branch's requirements: `'herdablePokemon'`, `'npcClass'`, `Value must be "npc".` and so
+  on. Now only the branch the file's `type` names is reported.
+
+Messages change for the cases above, and unions give fewer errors. Neither `keyword`, `params` nor
+`pointer` changes for the errors that remain.
+
 ## 0.1.0
 
 First release as its own package. Up to `@cobbled-creators/cobblemon-schemas` 1.8.0 and 1.7.0, the
