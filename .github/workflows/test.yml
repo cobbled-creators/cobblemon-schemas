@@ -5,10 +5,23 @@ on:
   pull_request:
 
 jobs:
-  test:
+  packages:
     runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: echo "list=$(node scripts/packages.mjs --json --with-engine)" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: packages
+    runs-on: ubuntu-latest
+    name: ${{ matrix.package }} on Node ${{ matrix.node }}
     strategy:
+      fail-fast: false
       matrix:
+        package: ${{ fromJson(needs.packages.outputs.list) }}
         node: [22, 24]
     steps:
       - uses: actions/checkout@v4
@@ -17,5 +30,4 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
-      - run: npm test
-
+      - run: node scripts/test.mjs --package ${{ matrix.package }}

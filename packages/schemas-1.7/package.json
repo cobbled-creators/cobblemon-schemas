@@ -1,0 +1,53 @@
+{
+  "name": "@cobbled-creators/cobblemon-schemas",
+  "version": "1.7.1",
+  "description": "JSON Schemas for Cobblemon 1.7 datapack and resource pack files, prebuilt for @cobbled-creators/cobblemon-validator, plus indexes of Cobblemon's own content. One release line per Cobblemon version.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cobbled-creators/cobblemon-schemas.git",
+    "directory": "packages/schemas-1.7"
+  },
+  "homepage": "https://github.com/cobbled-creators/cobblemon-schemas#readme",
+  "bugs": {
+    "url": "https://github.com/cobbled-creators/cobblemon-schemas/issues"
+  },
+  "keywords": [
+    "cobblemon",
+    "minecraft",
+    "datapack",
+    "json-schema",
+    "validation"
+  ],
+  "cobblemon": {
+    "version": "1.7",
+    "minecraft": "1.21.1",
+    "baseline": "1.7.3"
+  },
+  "exports": {
+    "./bundle.json": "./dist/bundle.json",
+    "./validators.mjs": {
+      "types": "./dist/validators.d.mts",
+      "default": "./dist/validators.mjs"
+    },
+    "./schemas/*": "./schemas/*",
+    "./indexes/*": "./indexes/*",
+    "./types/*": "./types/*",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "indexes",
+    "schemas",
+    "types"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/build.mjs",
+    "test": "node ../../scripts/test.mjs",
+    "prepack": "npm run build"
+  }
+}

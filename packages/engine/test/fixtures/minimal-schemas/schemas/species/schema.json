@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cobblemon-schema.local/fixture/species/schema.json",
+  "type": "object",
+  "required": ["name", "primaryType", "height", "baseStats"],
+  "properties": {
+    "name": { "$ref": "../_shared/common.schema.json#/$defs/name" },
+    "primaryType": { "type": "string" },
+    "height": { "type": "integer" },
+    "catchRate": { "type": "integer" },
+    "baseStats": {
+      "type": "object",
+      "required": ["hp", "attack", "defence"],
+      "properties": {
+        "hp": { "type": "integer" },
+        "attack": { "type": "integer" },
+        "defence": { "type": "integer" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

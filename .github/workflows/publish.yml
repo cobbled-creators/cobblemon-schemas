@@ -2,7 +2,7 @@ name: publish
 
 on:
   push:
-    tags: ['v*']
+    tags: ['engine-v*', 'schemas-v*']
 
 permissions:
   contents: read
@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -23,19 +21,10 @@ jobs:
       - run: npm ci
       - run: npm test
 
-      - name: Check the tag matches package.json
-        run: |
-          version=$(node -p "require('./package.json').version")
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME doesn't match package.json version $version" >&2
-            exit 1
-          fi
+      - name: Work out the package and dist-tag
+        id: release
+        run: node scripts/release.mjs "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Publish
-        run: |
-          git fetch --quiet origin main
-          if git merge-base --is-ancestor HEAD origin/main; then
-            npm publish
-          else
-            npm publish --tag "cobblemon-$(node -p "require('./package.json').cobblemon.version")"
-          fi
+      - name: Publish ${{ steps.release.outputs.name }}@${{ steps.release.outputs.version }} as ${{ steps.release.outputs.dist_tag }}
+        working-directory: ${{ steps.release.outputs.dir }}
+        run: npm publish --tag "${{ steps.release.outputs.dist_tag }}"
