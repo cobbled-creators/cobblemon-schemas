@@ -48,7 +48,11 @@ the browser setup (`bundle.json` + `validators.mjs`) and error positions.
   (`cobblemon:bulbasaur`) from a typo without a copy of Cobblemon.
 - `types/indexes.d.ts`: `CobblemonDataIndex` and `CobblemonAssetsIndex`, the shape of the indexes.
 - `types/moves.d.ts` and `types/abilities.d.ts`: TypeScript types for Showdown move and ability files
-  (`data/<namespace>/moves/*.ts`, `data/<namespace>/abilities/*.ts`).
+  (`data/<namespace>/moves/*.ts`, `data/<namespace>/abilities/*.ts`), generated from the Showdown that
+  Cobblemon 1.7 bundles. `MoveData`, `ConditionData` and `AbilityData` list every callback Showdown
+  declares, with its signature and a one-line description. An unknown key is an error, so
+  `{ …, onHitt() {} } satisfies MoveData` suggests `onHit`. Each file is self-contained and needs only
+  `lib.es5.d.ts`.
 
 ```ts
 import data from '@cobbled-creators/cobblemon-schemas/indexes/data.json' with { type: 'json' };
