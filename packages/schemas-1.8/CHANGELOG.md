@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.2
+
+- Error messages for integer ranges (`intRange`, `intRangeString`, such as a spawn's `level`) and for
+  identifiers, resource locations and tags now say what format is expected, with an example, through
+  `x-errorMessage` annotations. They show with `@cobbled-creators/cobblemon-validator` 0.2.0 or
+  later; 0.1.0 ignores them and shows its generic messages.
+
 ## 1.8.1
 
 **Breaking:** the validator moved to its own package,

@@ -10,15 +10,24 @@
     },
     "resourceLocation": {
       "type": "string",
-      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$",
+      "x-errorMessage": {
+        "pattern": "'{property}' takes a resource location: a lowercase namespace and path joined by ':', such as \"cobblemon:poke_ball\", not {value}."
+      }
     },
     "identifier": {
       "type": "string",
-      "pattern": "^(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+$"
+      "pattern": "^(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+$",
+      "x-errorMessage": {
+        "pattern": "'{property}' takes an identifier: a lowercase path such as \"poke_ball\", optionally after a namespace and ':', as in \"cobblemon:poke_ball\", not {value}."
+      }
     },
     "tagIdentifier": {
       "type": "string",
-      "pattern": "^#(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+$"
+      "pattern": "^#(?:[a-z0-9_.-]+:)?[a-z0-9_./-]+$",
+      "x-errorMessage": {
+        "pattern": "'{property}' takes a tag: '#' and then a lowercase identifier, such as \"#minecraft:is_forest\", not {value}."
+      }
     }
   }
 }

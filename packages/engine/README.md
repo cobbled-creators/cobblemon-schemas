@@ -17,12 +17,12 @@ upgrade you to 1.8's schemas. To use several Cobblemon versions at once, install
 alias and create one engine per version:
 
 ```json
-"@cobbled-creators/cobblemon-validator": "^0.1.0",
 "cobblemon-schemas-1.7": "npm:@cobbled-creators/cobblemon-schemas@~1.7.0",
 "cobblemon-schemas-1.8": "npm:@cobbled-creators/cobblemon-schemas@~1.8.0"
 ```
 
-The engine is on 0.x, so a breaking change bumps its minor version. `^0.1.0` only takes 0.1.x.
+The engine is on 0.x, so a breaking change bumps its minor version, and a `^` range on it only takes
+patches of that minor version.
 
 ## Node
 
@@ -32,7 +32,7 @@ import { loadEngine, readPack, validatePack } from '@cobbled-creators/cobblemon-
 const engine = await loadEngine({ schemas: '@cobbled-creators/cobblemon-schemas' });
 engine.cobblemon;                                     // { version: '1.8', minecraft: '1.21.1', baseline: '1.8.2' }
 engine.resolve('data/mypack/species/foo.json');      // 'schemas/species/schema.json'
-engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message }] }
+engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message, defaultMessage? }] }
 
 validatePack(readPack('path/to/pack'), engine);
 // [{ file, schema, errors: [{ kind: 'syntax' | 'schema', message, pointer,
@@ -57,12 +57,27 @@ editing a schema.
 
 Errors have a `code`: `ERR_COBBLEMON_SCHEMAS_NOT_FOUND`, `ERR_COBBLEMON_NOT_SCHEMA_PACKAGE`,
 `ERR_COBBLEMON_BUNDLE_MISSING` (no `dist/`, and not `live`), `ERR_COBBLEMON_BUNDLE_FORMAT` (a schema
-package this engine can't read: install the latest of both) or `ERR_COBBLEMON_BUNDLE_MISMATCH`.
+package this engine can't read: install the latest of both), `ERR_COBBLEMON_BUNDLE_MISMATCH` or, with
+`live: true`, `ERR_COBBLEMON_ANNOTATION` (an invalid `x-errorMessage` in the schemas).
 
 Missing required properties at the same place are one error, `Missing required properties: 'name',
 'height'.`, with every name in `params.missingProperties` (and the first in `params.missingProperty`).
 Pass `{ groupRequired: false }` to `engine.validate` or `engine.check` to get one error per property
 instead. `validatePack` always groups.
+
+A union whose alternatives all reject a value is one error too: `Expected an integer, a string matching
+^-?\d+(?:--?\d+)?$, or an object.`, or `Missing one of these properties: 'spawnablePositionType',
+'context'.` Its `keyword` is `oneOf` or `anyOf`.
+
+`message` is the most helpful text the engine has. Where the schema package has an `x-errorMessage`
+for the error, written by its collaborators, `message` is that, and `defaultMessage` has the engine's
+built-in message. Show `message`, and `defaultMessage` as detail if you like:
+
+```js
+// { pointer: ['spawns', 0, 'level'], keyword: 'oneOf', params: { passingSchemas: null },
+//   message: `'level' takes a whole number (5), a range ("5-32") or {"min": 5, "max": 32}, not "5 to 32".`,
+//   defaultMessage: 'Expected an integer, a string matching ^-?\\d+(?:--?\\d+)?$, or an object.' }
+```
 
 ## Error positions
 

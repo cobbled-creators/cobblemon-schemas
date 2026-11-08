@@ -1,12 +1,13 @@
 import { isBelow, parentPointer } from './pointer.mjs';
-import { findTypeBranches } from './type-branches.mjs';
+import { findTypeBranches, unselectedBranchFilter } from './type-branches.mjs';
 
 const COMBINATOR_KEYWORDS = new Set(['anyOf', 'oneOf', 'if']);
 
-export function simplifyAjvErrors(errors, rootData) {
+export function simplifyAjvErrors(errors, rootData, isFromUnselectedBranch = unselectedBranchFilter(errors, rootData)) {
   const branches = findTypeBranches(errors, rootData);
   const meaningful = errors.filter((error) =>
     !isOtherBranchError(error, branches)
+    && !isFromUnselectedBranch(error)
     && !isParentTypeError(error, errors)
     && !isRedundantCombinatorError(error, errors));
   return withoutDuplicates(meaningful);

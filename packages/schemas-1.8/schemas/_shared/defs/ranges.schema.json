@@ -6,7 +6,10 @@
   "$defs": {
     "intRangeString": {
       "type": "string",
-      "pattern": "^-?\\d+(?:--?\\d+)?$"
+      "pattern": "^-?\\d+(?:--?\\d+)?$",
+      "x-errorMessage": {
+        "pattern": "'{property}' takes a whole number or a range as a string, such as \"5\" or \"5-32\", not {value}."
+      }
     },
     "intRange": {
       "oneOf": [
@@ -32,7 +35,8 @@
           ],
           "additionalProperties": false
         }
-      ]
+      ],
+      "x-errorMessage": "'{property}' takes a whole number (5), a range (\"5-32\") or {\"min\": 5, \"max\": 32}, not {value}."
     },
     "intMinMax": {
       "type": "object",

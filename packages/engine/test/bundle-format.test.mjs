@@ -28,3 +28,31 @@ test('a schema that needs an ajv runtime helper the build cannot copy in fails t
   const root = schemaPackageWith({ tags: { $id: 'https://cobblemon-schema.local/test/tags/schema.json', type: 'array', uniqueItems: true } });
   assert.throws(() => compileBundle(root), /need ajv\/dist\/runtime\/equal, which the build doesn't inline/);
 });
+
+test('an x-errorMessage that could never apply, or uses an unknown placeholder, fails the build', () => {
+  const root = schemaPackageWith({
+    thing: {
+      $id: 'https://cobblemon-schema.local/test/thing/schema.json',
+      type: 'object',
+      required: ['name'],
+      properties: { name: { type: 'string', 'x-errorMessage': { minLength: 'Too short.', type: 'Not {limit}.' } }, kind: { $ref: '#/$defs/kind', 'x-errorMessage': 'Bad kind.' } },
+      additionalProperties: false,
+      'x-errorMessage': { required: { name: 'Name it.', size: 'Size it.' }, additionalProperties: { name: 'Declared.' } },
+      $defs: { kind: { enum: ['a', 'b'] } },
+    },
+  });
+  assert.throws(() => compileBundle(root), (error) => {
+    assert.equal(error.code, 'ERR_COBBLEMON_ANNOTATION');
+    assert.deepEqual(error.problems.map((problem) => problem.split(' ')[0]), [
+      'schemas/thing/schema.json#/x-errorMessage/required/size',
+      'schemas/thing/schema.json#/x-errorMessage/additionalProperties/name',
+      'schemas/thing/schema.json#/properties/name/x-errorMessage/minLength',
+      'schemas/thing/schema.json#/properties/name/x-errorMessage/type',
+      'schemas/thing/schema.json#/properties/kind/x-errorMessage',
+    ]);
+    assert.match(error.message, /^5 x-errorMessage annotations are invalid:\n/);
+    assert.match(error.message, /uses \{limit\}; it can use \{property\}, \{value\}, \{type\}\./);
+    assert.match(error.message, /is next to \$ref, so it never applies/);
+    return true;
+  });
+});

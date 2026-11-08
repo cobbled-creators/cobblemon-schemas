@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Ajv2020 from 'ajv/dist/2020.js';
+import { ANNOTATION, annotationProblems } from '../errors/annotations.mjs';
 
 const AJV_OPTIONS = { allErrors: true, strict: false, allowUnionTypes: true, verbose: true };
 
@@ -9,11 +10,22 @@ export function loadSchemas(schemasDir, ajvOptions = {}) {
   const root = path.resolve(schemasDir);
   const packageRoot = path.dirname(root);
   const ajv = new Ajv2020({ ...AJV_OPTIONS, ...ajvOptions });
+  const problems = [];
   for (const file of schemaFiles(root)) {
     const schema = JSON.parse(fs.readFileSync(file, 'utf8'));
-    ajv.addSchema(schema, schema.$id ?? path.relative(packageRoot, file).split(path.sep).join('/'));
+    const relativePath = path.relative(packageRoot, file).split(path.sep).join('/');
+    for (const { pointer, message } of annotationProblems(schema)) problems.push(`${relativePath}#${pointer} ${message}`);
+    ajv.addSchema(schema, schema.$id ?? relativePath);
   }
+  if (problems.length) throw annotationError(problems);
   return { ajv, entries: readIndex(root) };
+}
+
+function annotationError(problems) {
+  const error = new Error(`${problems.length === 1 ? 'An' : problems.length} ${ANNOTATION} annotation${problems.length === 1 ? ' is' : 's are'} invalid:\n${problems.map((problem) => `  ${problem}`).join('\n')}`);
+  error.code = 'ERR_COBBLEMON_ANNOTATION';
+  error.problems = problems;
+  return error;
 }
 
 function readIndex(root) {

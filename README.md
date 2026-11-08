@@ -34,7 +34,6 @@ To support several Cobblemon versions, install each under an npm alias and creat
 version:
 
 ```json
-"@cobbled-creators/cobblemon-validator": "^0.1.0",
 "cobblemon-schemas-1.7": "npm:@cobbled-creators/cobblemon-schemas@~1.7.0",
 "cobblemon-schemas-1.8": "npm:@cobbled-creators/cobblemon-schemas@~1.8.0"
 ```
@@ -92,6 +91,33 @@ schema packages are data, so they have no tests. Building one is its check: the 
 schema with the engine, and it fails if the package's folder, version and baseline disagree, if an
 indexed schema has no validator, or if the indexes are from another Cobblemon tag. It then loads the
 result with the engine. CI builds every schema package, so an engine change can't break one unnoticed.
+
+### Error messages
+
+The engine reports one plain message per schema error. Where a generic message isn't enough, add an
+`x-errorMessage` to the schema object whose rule fails, saying what's wrong and how to fix it:
+
+```jsonc
+"x-errorMessage": "'{property}' takes … not {value}."                 // any error from this object
+"x-errorMessage": { "minimum": "…", "pattern": "…", "oneOf": "…" }    // by keyword
+"x-errorMessage": { "additionalProperties": { "walk": "Move 'walk' into 'moving'.", "*": "…" } }
+```
+
+- A string, or a `oneOf`/`anyOf` entry, on an object with a union turns the union's failures into
+  one error with that message.
+- For `required` and `additionalProperties`, the entry can map property names to messages, with
+  `"*"` for the rest. A missing property with its own message isn't merged with the others.
+- Messages can use `{property}` (the field's name), `{value}` (what the file has, as JSON) and,
+  per keyword, ajv's params: `{limit}`, `{pattern}`, `{allowedValues}`, `{missingProperty}`,
+  `{missingProperties}`, `{additionalProperty}` and so on. Other `{` are literal, so JSON examples
+  need no escaping.
+- Annotate shared `$defs` rather than each use: `_shared/defs/ranges.schema.json` has examples. An
+  `x-errorMessage` next to a `$ref` never applies, because the errors come from the referenced
+  schema, so annotate that schema instead.
+
+The build rejects annotations that can never apply (a keyword or name the object doesn't have, or a
+`$ref` next to it) and unknown placeholders. The engine falls back to its built-in message wherever
+there's no annotation, and keeps that in `defaultMessage` where there is one.
 
 ### Adding a Cobblemon version
 

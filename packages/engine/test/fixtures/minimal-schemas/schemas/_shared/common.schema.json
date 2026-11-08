@@ -2,6 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cobblemon-schema.local/fixture/_shared/common.schema.json",
   "$defs": {
-    "name": { "type": "string", "minLength": 1 }
+    "name": { "type": "string", "minLength": 1 },
+    "levelRange": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "pattern": "^[0-9]+-[0-9]+$" }
+      ],
+      "x-errorMessage": "'{property}' takes a level (5) or a range (\"5-32\"), not {value}."
+    }
   }
 }

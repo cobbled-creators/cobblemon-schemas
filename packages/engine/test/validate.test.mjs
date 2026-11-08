@@ -68,9 +68,35 @@ test('grouping is per pointer and leaves other errors, and their order, alone', 
   assert.deepEqual(others(grouped), others(engine.validate(FIXTURE_SPECIES, value, { groupRequired: false })));
 });
 
+// A Pokémon spawn without position or context, as Cobblemon's spawn files are: the shared base fails
+// in every branch, which used to report the npc branch's requirements too.
+const ANNOTATED = { ...TESTMON, height: 7.5, stats: {}, spawn: { type: 'pokemon', position: 'grounded', level: '5 to 32' } };
+const BUILT_IN = { ...TESTMON, name: '', height: 0, size: 'big', eggGroup: 'monstr', catchrate: 3, spawn: { type: 'pokemon', pokemon: 'testmon' } };
+const described = (errors) => errors.map((error) => [error.pointer, error.keyword, error.message, error.defaultMessage]);
+
+test('x-errorMessage annotations in the schema replace messages, keeping the built-in one', () => {
+  assert.deepEqual(described(engine.validate(FIXTURE_SPECIES, ANNOTATED)), [
+    [[], 'additionalProperties', "Stats go in 'baseStats'.", "Unknown property 'stats'."],
+    [['height'], 'type', 'Height is a whole number of decimetres, not 7.5.', "Expected type 'integer'."],
+    [['spawn', 'level'], 'oneOf', `'level' takes a level (5) or a range ("5-32"), not "5 to 32".`, 'Expected an integer or a string matching ^[0-9]+-[0-9]+$.'],
+    [['spawn'], 'required', "A Pokémon spawn needs 'pokemon': the species to spawn.", "Missing required property 'pokemon'."],
+  ]);
+});
+
+test('without annotations, built-in messages cover bounds, unions, alternatives and near misses', () => {
+  assert.deepEqual(described(engine.validate(FIXTURE_SPECIES, BUILT_IN)), [
+    [[], 'additionalProperties', "Unknown property 'catchrate'. Did you mean 'catchRate'?", undefined],
+    [['name'], 'minLength', 'Must not be empty.', undefined],
+    [['height'], 'minimum', 'Must be at least 1.', undefined],
+    [['eggGroup'], 'enum', 'Value must be one of: "monster", "grass", "water_1". Did you mean "monster"?', undefined],
+    [['size'], 'oneOf', 'Expected an integer or a string matching ^[0-9]+x[0-9]+$.', undefined],
+    [['spawn'], 'anyOf', "Missing one of these properties: 'position', 'context'.", undefined],
+  ]);
+});
+
 test('the built validators and live ajv agree', async () => {
   const live = await loadEngine({ schemas: root, live: true });
-  for (const value of [TESTMON, { ...TESTMON, extra: true }, {}, { ...TESTMON, name: '', baseStats: { hp: 'x' } }]) {
+  for (const value of [TESTMON, { ...TESTMON, extra: true }, {}, { ...TESTMON, name: '', baseStats: { hp: 'x' } }, ANNOTATED, BUILT_IN]) {
     assert.deepEqual(engine.validate(FIXTURE_SPECIES, value), live.validate(FIXTURE_SPECIES, value));
   }
 });

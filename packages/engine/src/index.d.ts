@@ -39,7 +39,10 @@ export interface SchemaError {
   pointer: Pointer;
   keyword: string;
   params: Record<string, unknown>;
+  /** The most helpful message the engine has: from an `x-errorMessage` annotation in the schema, or built in. */
   message: string;
+  /** The engine's built-in message, when an annotation supplied `message` instead. */
+  defaultMessage?: string;
 }
 
 export interface ValidateOptions {
@@ -70,6 +73,7 @@ export class SchemaEngine {
 }
 
 export function simplifyAjvErrors<T>(errors: T[], rootData: unknown): T[];
+/** The built-in message for one ajv error, from a validator compiled with `verbose`. Never uses annotations. */
 export function formatAjvError(error: unknown): string;
 export function decodePointer(pointer: string): Pointer;
 
@@ -111,6 +115,8 @@ export interface PackError {
   kind: 'syntax' | 'schema';
   pointer: Pointer;
   message: string;
+  /** For schema errors whose `message` came from an annotation: the built-in message. */
+  defaultMessage?: string;
   line?: number;
   column?: number;
   offset?: number;

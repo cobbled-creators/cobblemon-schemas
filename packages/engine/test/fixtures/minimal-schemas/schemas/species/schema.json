@@ -6,8 +6,14 @@
   "properties": {
     "name": { "$ref": "../_shared/common.schema.json#/$defs/name" },
     "primaryType": { "type": "string" },
-    "height": { "type": "integer" },
+    "height": {
+      "type": "integer",
+      "minimum": 1,
+      "x-errorMessage": { "type": "Height is a whole number of decimetres, not {value}." }
+    },
     "catchRate": { "type": "integer" },
+    "eggGroup": { "enum": ["monster", "grass", "water_1"] },
+    "size": { "oneOf": [{ "type": "integer" }, { "type": "string", "pattern": "^[0-9]+x[0-9]+$" }] },
     "baseStats": {
       "type": "object",
       "required": ["hp", "attack", "defence"],
@@ -17,7 +23,47 @@
         "defence": { "type": "integer" }
       },
       "additionalProperties": false
-    }
+    },
+    "spawn": { "$ref": "#/$defs/spawn" }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "x-errorMessage": {
+    "additionalProperties": { "stats": "Stats go in 'baseStats'." }
+  },
+  "$defs": {
+    "spawn": { "oneOf": [{ "$ref": "#/$defs/pokemonSpawn" }, { "$ref": "#/$defs/npcSpawn" }] },
+    "spawnBase": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["pokemon", "npc"] },
+        "level": { "$ref": "../_shared/common.schema.json#/$defs/levelRange" },
+        "position": { "type": "string" },
+        "context": { "type": "string" },
+        "pokemon": { "type": "string" },
+        "npc": { "type": "string" },
+        "npcClass": { "type": "string" }
+      },
+      "anyOf": [{ "required": ["position"] }, { "required": ["context"] }]
+    },
+    "pokemonSpawn": {
+      "allOf": [
+        { "$ref": "#/$defs/spawnBase" },
+        {
+          "properties": { "type": { "const": "pokemon" } },
+          "required": ["pokemon"],
+          "x-errorMessage": { "required": { "pokemon": "A Pokémon spawn needs 'pokemon': the species to spawn." } }
+        }
+      ]
+    },
+    "npcSpawn": {
+      "allOf": [
+        { "$ref": "#/$defs/spawnBase" },
+        {
+          "properties": { "type": { "const": "npc" } },
+          "anyOf": [{ "required": ["npc"] }, { "required": ["npcClass"] }]
+        }
+      ]
+    }
+  }
 }
