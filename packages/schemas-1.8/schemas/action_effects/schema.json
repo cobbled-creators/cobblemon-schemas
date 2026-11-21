@@ -5,18 +5,23 @@
   "type": "object",
   "properties": {
     "timeline": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/keyframe"
-      }
+      "oneOf": [
+        {
+          "$ref": "#/$defs/keyframe"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/keyframe"
+          }
+        }
+      ],
+      "default": []
     },
     "condition": {
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
-  "required": [
-    "timeline"
-  ],
   "additionalProperties": false,
   "$defs": {
     "keyframe": {

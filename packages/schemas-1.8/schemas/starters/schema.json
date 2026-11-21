@@ -12,6 +12,10 @@
       "type": "string",
       "minLength": 1
     },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
     "pokemon": {
       "type": "array",
       "minItems": 1,
@@ -22,6 +26,7 @@
   },
   "required": [
     "name",
+    "displayName",
     "pokemon"
   ],
   "additionalProperties": false

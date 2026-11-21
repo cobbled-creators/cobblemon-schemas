@@ -41,5 +41,19 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "infiniteStamina",
+    "terminalVelocity",
+    "rotatePokemonHead",
+    "stamReplenishTimeSeconds",
+    "staminaExpr",
+    "rotationSpeedModifierExpr",
+    "jumpStrengthExpr",
+    "speedExpr",
+    "accelerationExpr",
+    "sprintSpeedModifier",
+    "sprintFovModifier",
+    "surfaceLevelOffset"
+  ],
   "additionalProperties": false
 }

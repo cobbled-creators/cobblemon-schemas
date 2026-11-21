@@ -27,14 +27,19 @@
     },
     "configurations": {
       "type": "array",
+      "default": [],
       "items": {
-        "$ref": "#/$defs/configuration"
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/$defs/configuration"
+          }
+        ]
       }
     }
   },
-  "required": [
-    "configurations"
-  ],
   "additionalProperties": false,
   "$defs": {
     "task": {

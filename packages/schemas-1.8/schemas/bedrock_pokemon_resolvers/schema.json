@@ -8,43 +8,25 @@
       "$ref": "../_shared/defs/identifiers.schema.json#/$defs/resourceLocation"
     },
     "name": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/resourceLocation"
+      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/resourceLocation",
+      "default": "cobblemon:thing"
     },
     "pokeball": {
       "$ref": "../_shared/defs/identifiers.schema.json#/$defs/resourceLocation"
     },
     "order": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "default": 0
     },
     "variations": {
       "type": "array",
+      "default": [],
       "items": {
         "$ref": "#/$defs/variation"
       }
     }
   },
-  "required": [
-    "order",
-    "variations"
-  ],
-  "anyOf": [
-    {
-      "required": [
-        "species"
-      ]
-    },
-    {
-      "required": [
-        "name"
-      ]
-    },
-    {
-      "required": [
-        "pokeball"
-      ]
-    }
-  ],
   "additionalProperties": false,
   "$defs": {
     "textureSupplier": {
@@ -149,6 +131,7 @@
       "properties": {
         "aspects": {
           "type": "array",
+          "default": [],
           "items": {
             "type": "string"
           }
@@ -175,9 +158,6 @@
           "$ref": "#/$defs/sprites"
         }
       },
-      "required": [
-        "aspects"
-      ],
       "additionalProperties": false
     }
   }

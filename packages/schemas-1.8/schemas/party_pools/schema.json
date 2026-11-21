@@ -4,9 +4,6 @@
   "title": "Cobblemon Party Pool",
   "type": "object",
   "properties": {
-    "id": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-    },
     "displayName": {
       "type": "string"
     },
@@ -14,19 +11,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/poolEntry"
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "entries"
-  ],
   "additionalProperties": false,
   "$defs": {
     "poolEntry": {
       "type": "object",
       "properties": {
         "pokemon": {
-          "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
+          "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties",
+          "default": "pikachu"
         },
         "labels": {
           "$ref": "../_shared/defs/collections.schema.json#/$defs/stringList"
@@ -59,9 +55,6 @@
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
         }
       },
-      "required": [
-        "pokemon"
-      ],
       "additionalProperties": false
     },
     "scriptableIntRange": {

@@ -8,19 +8,17 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/requirement"
-      }
+      },
+      "default": []
     },
     "interactions": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/interaction"
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "requirements",
-    "interactions"
-  ],
   "additionalProperties": false,
   "$defs": {
     "requirement": {
@@ -60,6 +58,38 @@
         "sound": {
           "type": "string"
         },
+        "soundSource": {
+          "type": "string",
+          "enum": [
+            "master",
+            "music",
+            "records",
+            "weather",
+            "blocks",
+            "hostile",
+            "neutral",
+            "players",
+            "ambient",
+            "voice"
+          ],
+          "default": "neutral"
+        },
+        "playAround": {
+          "type": "boolean",
+          "default": true
+        },
+        "distance": {
+          "type": "number",
+          "default": 64
+        },
+        "volume": {
+          "type": "number",
+          "default": 1
+        },
+        "pitch": {
+          "type": "number",
+          "default": 1
+        },
         "amount": {
           "oneOf": [
             {
@@ -79,26 +109,6 @@
       ],
       "additionalProperties": false,
       "allOf": [
-        {
-          "if": {
-            "properties": {
-              "variant": {
-                "enum": [
-                  "drop_item",
-                  "give_item"
-                ]
-              }
-            },
-            "required": [
-              "variant"
-            ]
-          },
-          "then": {
-            "required": [
-              "item"
-            ]
-          }
-        },
         {
           "if": {
             "properties": {
@@ -145,22 +155,22 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/requirement"
-          }
+          },
+          "default": []
         },
         "effects": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/effect"
-          }
+          },
+          "default": []
         },
         "cooldown": {
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
         }
       },
       "required": [
-        "grouping",
-        "requirements",
-        "effects"
+        "grouping"
       ],
       "additionalProperties": false
     }

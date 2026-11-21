@@ -32,5 +32,16 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "infiniteStamina",
+    "boostSpeedMod",
+    "boostHandlingMod",
+    "maxTurnRate",
+    "speedExpr",
+    "accelerationExpr",
+    "staminaExpr",
+    "jumpExpr",
+    "handlingExpr"
+  ],
   "additionalProperties": false
 }

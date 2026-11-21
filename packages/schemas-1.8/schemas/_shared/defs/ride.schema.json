@@ -22,20 +22,18 @@
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "default": []
               },
               "animations": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "additionalProperties": true
-                }
+                },
+                "default": []
               }
             },
-            "required": [
-              "poseTypes",
-              "animations"
-            ],
             "additionalProperties": false
           }
         },

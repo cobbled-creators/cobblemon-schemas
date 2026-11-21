@@ -3,6 +3,9 @@ import { describeAjvErrors } from './errors/describe.mjs';
 import { groupRequiredErrors } from './errors/group-required.mjs';
 import { SchemaIndex } from './schema-index.mjs';
 
+// Cobblemon's Gson and Codec loaders skip keys they don't know, so an unknown property loads fine but does nothing.
+const withSeverity = (error) => ({ ...error, severity: error.keyword === 'additionalProperties' ? 'warning' : 'error' });
+
 export class SchemaEngine {
   #index;
   #validators;
@@ -31,7 +34,7 @@ export class SchemaEngine {
     const validator = this.#validators.get(schemaPath);
     if (!validator || validator(value)) return [];
     const { errors, annotations } = describeAjvErrors(validator.errors ?? [], value);
-    return groupRequired ? groupRequiredErrors(errors, annotations) : errors;
+    return (groupRequired ? groupRequiredErrors(errors, annotations) : errors).map(withSeverity);
   }
 
   check(packPath, value, options) {

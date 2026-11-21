@@ -11,7 +11,7 @@ export function validatePack(files, engine) {
 
 function validateFile(content, schema, engine) {
   const parsed = parseJson(content);
-  const syntaxErrors = parsed.syntaxErrors.map((error) => ({ kind: 'syntax', pointer: [], ...error }));
+  const syntaxErrors = parsed.syntaxErrors.map((error) => ({ kind: 'syntax', severity: 'error', pointer: [], ...error }));
   if (parsed.value === undefined) return syntaxErrors;
 
   const schemaErrors = engine.validate(schema, parsed.value).map((error) => ({

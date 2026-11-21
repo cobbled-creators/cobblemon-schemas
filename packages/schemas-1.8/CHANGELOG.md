@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.8.3 (2026-11-21)
+
+`required` and the allowed properties now follow how Cobblemon 1.8.2 actually loads each file.
+
+- A property is `required` only if Cobblemon fails without it, at load, when syncing to players or
+  when the entry is used. A property Cobblemon fills in when it's missing is optional, with a
+  `default` giving the value Cobblemon uses. For example, a species needs only `baseStats`, and a
+  form needs nothing: every form property falls back to the species.
+- Newly required, because Cobblemon crashes without them: `obtainMethods` (tms), `displayName`
+  (starters), the dialogue input `type`, `riding.behaviours.<style>.key`, berry growth-factor
+  `range` and `specific_biome` `biome`, and the ride_settings fields that the ride code reads with no
+  fallback.
+- Properties Cobblemon never reads are gone. Examples: species `aspects` and `battleOnly`,
+  `hitbox.fixed`, the old `riding.behaviour` and `riding.stats`, form `eggCycles`, cosmetic `item`
+  (Cobblemon reads `consumedItem`), dialogue `timeout.delay` (Cobblemon reads `duration`), and
+  `party_pools` `id`. With `@cobbled-creators/cobblemon-validator` 0.3.0 or later such keys are
+  warnings, not errors.
+- Form `baseFriendship` is `_baseFriendship`, the key Cobblemon 1.8.2 actually reads.
+- Keys and shapes Cobblemon accepts that were rejected now validate. Examples: berry `flavor` and
+  `color`, `#tag` seasoning and bait items, starter `order`, `play_sound` options, a single
+  action-effect keyframe, and plain text-component dialogue lines.
+- Shapes that crash Cobblemon are rejected. Examples: the `{min, max}` form of `intRange`, an inline
+  NPC class in a spawn, lowercase `variableDefinition` types, and `npcLevels` written as anything
+  but `"a-b"`.
+
 ## 1.8.2 (2026-11-08)
 
 - `types/moves.d.ts` and `types/abilities.d.ts` are generated from the Showdown bundled with Cobblemon

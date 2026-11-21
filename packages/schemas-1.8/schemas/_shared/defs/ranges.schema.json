@@ -18,25 +18,9 @@
         },
         {
           "$ref": "./ranges.schema.json#/$defs/intRangeString"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "min": {
-              "type": "integer"
-            },
-            "max": {
-              "type": "integer"
-            }
-          },
-          "required": [
-            "min",
-            "max"
-          ],
-          "additionalProperties": false
         }
       ],
-      "x-errorMessage": "'{property}' takes a whole number (5), a range (\"5-32\") or {\"min\": 5, \"max\": 32}, not {value}."
+      "x-errorMessage": "'{property}' takes a whole number (5) or a range as a string (\"5-32\"), not {value}."
     },
     "intMinMax": {
       "type": "object",

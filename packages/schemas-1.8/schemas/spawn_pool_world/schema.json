@@ -4,9 +4,6 @@
   "title": "Cobblemon Spawn Pool Set",
   "type": "object",
   "properties": {
-    "comment": {
-      "type": "string"
-    },
     "enabled": {
       "type": "boolean"
     },
@@ -14,26 +11,24 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     },
     "neededUninstalledMods": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     },
     "spawns": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/spawnDetail"
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "neededInstalledMods",
-    "neededUninstalledMods",
-    "spawns"
-  ],
   "additionalProperties": false,
   "$defs": {
     "conditionOrList": {
@@ -97,7 +92,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "type": {
           "type": "string",
@@ -192,7 +188,8 @@
           "type": "integer"
         },
         "weight": {
-          "type": "number"
+          "type": "number",
+          "default": -1
         },
         "percentage": {
           "type": "number"
@@ -217,22 +214,41 @@
         }
       },
       "required": [
-        "type",
-        "bucket",
-        "weight"
+        "type"
       ],
-      "anyOf": [
-        {
-          "required": [
-            "spawnablePositionType"
-          ]
-        },
-        {
-          "required": [
-            "context"
+      "if": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "preset"
+              ]
+            },
+            {
+              "required": [
+                "presets"
+              ]
+            }
           ]
         }
-      ],
+      },
+      "then": {
+        "required": [
+          "bucket"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "spawnablePositionType"
+            ]
+          },
+          {
+            "required": [
+              "context"
+            ]
+          }
+        ]
+      },
       "additionalProperties": true
     },
     "pokemonSpawn": {
@@ -265,22 +281,6 @@
               }
             }
           },
-          "required": [
-            "id",
-            "pokemon"
-          ],
-          "anyOf": [
-            {
-              "required": [
-                "level"
-              ]
-            },
-            {
-              "required": [
-                "levelRange"
-              ]
-            }
-          ],
           "additionalProperties": true
         }
       ]
@@ -346,28 +346,13 @@
                     "type": "integer"
                   }
                 },
-                "required": [
-                  "pokemon"
-                ],
                 "additionalProperties": false
-              }
+              },
+              "minItems": 1
             }
           },
           "required": [
-            "id",
             "herdablePokemon"
-          ],
-          "anyOf": [
-            {
-              "required": [
-                "level"
-              ]
-            },
-            {
-              "required": [
-                "levelRange"
-              ]
-            }
           ],
           "additionalProperties": true
         }
@@ -385,34 +370,13 @@
               "const": "npc"
             },
             "npcClass": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../npcs/schema.json"
-                }
-              ]
+              "type": "string"
             },
             "class": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../npcs/schema.json"
-                }
-              ]
+              "type": "string"
             },
             "npc": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../npcs/schema.json"
-                }
-              ]
+              "type": "string"
             },
             "aspects": {
               "type": "array",
@@ -427,9 +391,6 @@
               "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
             }
           },
-          "required": [
-            "id"
-          ],
           "anyOf": [
             {
               "required": [

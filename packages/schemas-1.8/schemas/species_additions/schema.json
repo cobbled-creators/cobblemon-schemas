@@ -11,12 +11,5 @@
   "required": [
     "target"
   ],
-  "additionalProperties": true,
-  "allOf": [
-    {
-      "not": {
-        "maxProperties": 1
-      }
-    }
-  ]
+  "additionalProperties": true
 }

@@ -4,7 +4,7 @@
   "title": "Cobblemon Ride Settings: Burst",
   "type": "object",
   "properties": {
-    "dashSpeed": { "type": "integer" }
+    "dashSpeed": { "type": "number" }
   },
   "required": ["dashSpeed"],
   "additionalProperties": false

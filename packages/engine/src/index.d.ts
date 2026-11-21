@@ -43,7 +43,11 @@ export interface SchemaError {
   message: string;
   /** The engine's built-in message, when an annotation supplied `message` instead. */
   defaultMessage?: string;
+  /** `'warning'` for an unknown property, which Cobblemon ignores; `'error'` for everything else. */
+  severity: Severity;
 }
+
+export type Severity = 'error' | 'warning';
 
 export interface ValidateOptions {
   /** Merge `required` errors at the same pointer. Default true. */
@@ -113,6 +117,8 @@ export function parseJson(bytes: Uint8Array | string): ParsedJson;
 
 export interface PackError {
   kind: 'syntax' | 'schema';
+  /** Syntax errors are always `'error'`. */
+  severity: Severity;
   pointer: Pointer;
   message: string;
   /** For schema errors whose `message` came from an annotation: the built-in message. */

@@ -21,11 +21,9 @@
           "friendshipDrop"
         ],
         "additionalProperties": false
-      }
+      },
+      "default": {}
     }
   },
-  "required": [
-    "remedies"
-  ],
   "additionalProperties": false
 }

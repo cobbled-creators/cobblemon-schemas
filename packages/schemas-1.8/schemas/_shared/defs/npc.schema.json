@@ -8,7 +8,8 @@
       "type": "object",
       "properties": {
         "variableName": {
-          "type": "string"
+          "type": "string",
+          "default": "variable"
         },
         "category": {
           "oneOf": [
@@ -19,7 +20,8 @@
               "type": "object",
               "additionalProperties": true
             }
-          ]
+          ],
+          "default": "Variables"
         },
         "displayName": {
           "oneOf": [
@@ -30,7 +32,8 @@
               "type": "object",
               "additionalProperties": true
             }
-          ]
+          ],
+          "default": "Variable"
         },
         "description": {
           "oneOf": [
@@ -41,10 +44,17 @@
               "type": "object",
               "additionalProperties": true
             }
-          ]
+          ],
+          "default": "A variable that can be used in the entity's configuration."
         },
         "type": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "NUMBER",
+            "TEXT",
+            "BOOLEAN"
+          ],
+          "default": "NUMBER"
         },
         "defaultValue": {
           "anyOf": [
@@ -60,16 +70,10 @@
             {
               "type": "integer"
             }
-          ]
+          ],
+          "default": "0"
         }
       },
-      "required": [
-        "variableName",
-        "displayName",
-        "description",
-        "type",
-        "defaultValue"
-      ],
       "additionalProperties": false
     }
   }

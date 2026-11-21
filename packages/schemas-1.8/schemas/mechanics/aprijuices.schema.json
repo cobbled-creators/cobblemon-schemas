@@ -9,17 +9,19 @@
       "additionalProperties": {
         "type": "object",
         "additionalProperties": { "type": "integer" }
-      }
+      },
+      "default": {}
     },
     "statPointFlavourThresholds": {
       "type": "object",
-      "additionalProperties": { "type": "integer" }
+      "additionalProperties": { "type": "integer" },
+      "default": {}
     },
     "cookingQualityPointThresholds": {
       "type": "object",
       "additionalProperties": { "type": "string" }
     }
   },
-  "required": ["apricornStatEffects", "statPointFlavourThresholds", "cookingQualityPointThresholds"],
+  "required": ["cookingQualityPointThresholds"],
   "additionalProperties": false
 }

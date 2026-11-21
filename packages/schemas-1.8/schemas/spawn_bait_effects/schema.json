@@ -5,7 +5,14 @@
   "type": "object",
   "properties": {
     "item": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+      "anyOf": [
+        {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+        },
+        {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/tagIdentifier"
+        }
+      ]
     },
     "effects": {
       "type": "array",
@@ -20,15 +27,15 @@
           },
           "chance": {
             "type": "number",
-            "minimum": 0
+            "minimum": 0,
+            "default": 0
           },
           "value": {
             "type": "number"
           }
         },
         "required": [
-          "type",
-          "chance"
+          "type"
         ],
         "additionalProperties": false
       }

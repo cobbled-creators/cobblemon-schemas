@@ -70,19 +70,17 @@
       "type": "object",
       "properties": {
         "amount": {
-          "$ref": "./ranges.schema.json#/$defs/intRange"
+          "$ref": "./ranges.schema.json#/$defs/intRange",
+          "default": 1
         },
         "entries": {
           "type": "array",
           "items": {
             "$ref": "./drops.schema.json#/$defs/dropEntry"
-          }
+          },
+          "default": []
         }
       },
-      "required": [
-        "amount",
-        "entries"
-      ],
       "additionalProperties": false
     }
   }
