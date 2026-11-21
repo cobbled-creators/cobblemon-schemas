@@ -38,5 +38,16 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "deccelRate",
+    "minSpeedFactor",
+    "handlingYawExpr",
+    "handlingExpr",
+    "speedExpr",
+    "accelerationExpr",
+    "jumpExpr",
+    "staminaExpr",
+    "maxDownwardForceSeconds"
+  ],
   "additionalProperties": false
 }

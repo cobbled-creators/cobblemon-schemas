@@ -32,10 +32,10 @@ import { loadEngine, readPack, validatePack } from '@cobbled-creators/cobblemon-
 const engine = await loadEngine({ schemas: '@cobbled-creators/cobblemon-schemas' });
 engine.cobblemon;                                     // { version: '1.8', minecraft: '1.21.1', baseline: '1.8.2' }
 engine.resolve('data/mypack/species/foo.json');      // 'schemas/species/schema.json'
-engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message, defaultMessage? }] }
+engine.check('data/mypack/species/foo.json', value); // { schema, errors: [{ pointer, keyword, params, message, severity, defaultMessage? }] }
 
 validatePack(readPack('path/to/pack'), engine);
-// [{ file, schema, errors: [{ kind: 'syntax' | 'schema', message, pointer,
+// [{ file, schema, errors: [{ kind: 'syntax' | 'schema', severity, message, pointer,
 //                             line, column, offset, length, endLine, endColumn }] }]
 
 const engine17 = await loadEngine({ schemas: 'cobblemon-schemas-1.7' });
@@ -59,6 +59,10 @@ Errors have a `code`: `ERR_COBBLEMON_SCHEMAS_NOT_FOUND`, `ERR_COBBLEMON_NOT_SCHE
 `ERR_COBBLEMON_BUNDLE_MISSING` (no `dist/`, and not `live`), `ERR_COBBLEMON_BUNDLE_FORMAT` (a schema
 package this engine can't read: install the latest of both), `ERR_COBBLEMON_BUNDLE_MISMATCH` or, with
 `live: true`, `ERR_COBBLEMON_ANNOTATION` (an invalid `x-errorMessage` in the schemas).
+
+Every error has a `severity`. An unknown property is a `'warning'`: Cobblemon's loaders skip keys
+they don't read, so the file still loads, but the key does nothing (often a typo, or a key Cobblemon
+dropped). Everything else, including every syntax error, is an `'error'`.
 
 Missing required properties at the same place are one error, `Missing required properties: 'name',
 'height'.`, with every name in `params.missingProperties` (and the first in `params.missingProperty`).

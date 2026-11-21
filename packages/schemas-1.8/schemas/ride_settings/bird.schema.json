@@ -44,5 +44,19 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "infiniteStamina",
+    "timeToRollCorrect",
+    "handlingExpr",
+    "horizontalPitchExpr",
+    "mouseInputMult",
+    "speedExpr",
+    "accelerationExpr",
+    "staminaExpr",
+    "stamDrainHorzMod",
+    "stamDrainPercRateGlide",
+    "stamDrainPerRateDive",
+    "glideSpeedExpr"
+  ],
   "additionalProperties": false
 }

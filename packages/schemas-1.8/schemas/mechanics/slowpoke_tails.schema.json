@@ -4,14 +4,14 @@
   "title": "Cobblemon Mechanics: Slowpoke Tails",
   "type": "object",
   "properties": {
-    "canShearSlowpoke": { "type": "boolean" },
-    "onlyRegrowWhenSentOut": { "type": "boolean" },
-    "regrowthSeconds": { "type": "integer", "minimum": 0 },
+    "canShearSlowpoke": { "type": "boolean", "default": true },
+    "onlyRegrowWhenSentOut": { "type": "boolean", "default": false },
+    "regrowthSeconds": { "type": "integer", "minimum": 0, "default": 1200 },
     "aspectThresholds": {
       "type": "object",
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": { "type": "string" },
+      "default": {}
     }
   },
-  "required": ["canShearSlowpoke", "onlyRegrowWhenSentOut", "regrowthSeconds", "aspectThresholds"],
   "additionalProperties": false
 }

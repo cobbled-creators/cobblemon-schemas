@@ -5,18 +5,16 @@
   "type": "object",
   "properties": {
     "dexId": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier",
+      "default": "cobblemon:national"
     },
     "entries": {
       "type": "array",
       "items": {
         "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "dexId",
-    "entries"
-  ],
   "additionalProperties": false
 }

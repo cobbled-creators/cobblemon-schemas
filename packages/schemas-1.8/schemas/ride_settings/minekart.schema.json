@@ -29,5 +29,12 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "canJump",
+    "boostLimit",
+    "speedExpr",
+    "accelerationExpr",
+    "handlingExpr"
+  ],
   "additionalProperties": false
 }

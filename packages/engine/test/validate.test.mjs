@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SchemaEngine, validatePack } from '../src/index.mjs';
 import { loadEngine } from '../src/node.mjs';
-import { FIXTURE_SPECIES, installFixture, TESTMON } from './helpers.mjs';
+import { FIXTURE_SPECIES, installFixture, schemaPackageWith, TESTMON } from './helpers.mjs';
 
 const { root } = installFixture();
 const engine = await loadEngine({ schemas: root });
@@ -35,7 +35,7 @@ test('check resolves and validates, with one plain error per problem', () => {
   assert.deepEqual(engine.check('data/x/species/a.json', TESTMON), { schema: FIXTURE_SPECIES, errors: [] });
   assert.deepEqual(engine.check('data/x/species/a.json', { ...TESTMON, extra: true }), {
     schema: FIXTURE_SPECIES,
-    errors: [{ pointer: [], keyword: 'additionalProperties', params: { additionalProperty: 'extra' }, message: "Unknown property 'extra'." }],
+    errors: [{ pointer: [], keyword: 'additionalProperties', params: { additionalProperty: 'extra' }, message: "Unknown property 'extra'.", severity: 'warning' }],
   });
   assert.deepEqual(engine.check('data/x/nothing/a.json', { ...TESTMON, extra: true }), { schema: null, errors: [] });
 });
@@ -94,6 +94,12 @@ test('without annotations, built-in messages cover bounds, unions, alternatives 
   ]);
 });
 
+test('an unknown key in an object branch of an object-or-string union is only a warning', async () => {
+  const hitbox = { oneOf: [{ type: 'object', properties: { width: { type: 'number' } }, additionalProperties: false }, { enum: ['player'], type: 'string' }] };
+  const live = await loadEngine({ schemas: schemaPackageWith({ thing: { $id: 'https://cobblemon-schema.local/test/thing/schema.json', type: 'object', properties: { hitbox } } }), live: true });
+  assert.deepEqual(live.validate('schemas/thing/schema.json', { hitbox: { width: 1, fixed: true } }).map((error) => [error.keyword, error.severity]), [['additionalProperties', 'warning']]);
+});
+
 test('the built validators and live ajv agree', async () => {
   const live = await loadEngine({ schemas: root, live: true });
   for (const value of [TESTMON, { ...TESTMON, extra: true }, {}, { ...TESTMON, name: '', baseStats: { hp: 'x' } }, ANNOTATED, BUILT_IN]) {
@@ -111,9 +117,9 @@ test('validatePack checks only covered files, and positions syntax and schema er
   assert.deepEqual(results.map((result) => result.file), ['data/mypack/species/testmon.json']);
 
   const [trailingComma, unknownProperty] = results[0].errors;
-  assert.deepEqual([trailingComma.kind, trailingComma.message], ['syntax', 'Trailing comma.']);
+  assert.deepEqual([trailingComma.kind, trailingComma.severity, trailingComma.message], ['syntax', 'error', 'Trailing comma.']);
   assert.equal(text.slice(trailingComma.offset, trailingComma.offset + trailingComma.length), ',');
-  assert.equal(unknownProperty.kind, 'schema');
+  assert.deepEqual([unknownProperty.kind, unknownProperty.severity], ['schema', 'warning']);
   assert.equal(text.slice(unknownProperty.offset, unknownProperty.offset + unknownProperty.length), '"extra"');
   assert.match(text.split('\n')[unknownProperty.line - 1], /"extra"/);
 });

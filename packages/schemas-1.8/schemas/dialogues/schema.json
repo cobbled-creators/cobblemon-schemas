@@ -6,6 +6,7 @@
   "properties": {
     "pages": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "$ref": "#/$defs/page"
       }
@@ -23,12 +24,12 @@
       "type": "object",
       "additionalProperties": {
         "$ref": "#/$defs/speaker"
-      }
+      },
+      "default": {}
     }
   },
   "required": [
-    "pages",
-    "speakers"
+    "pages"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -38,19 +39,37 @@
           "type": "string"
         },
         {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
           "type": "object",
           "properties": {
             "type": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "expression"
+              ]
             },
             "expression": {
-              "type": "string"
+              "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+              "default": "''"
             }
           },
           "required": [
-            "type",
-            "expression"
+            "type"
           ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "not": {
+            "required": [
+              "type"
+            ]
+          },
           "additionalProperties": true
         }
       ]
@@ -59,30 +78,12 @@
       "type": "object",
       "properties": {
         "text": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string"
-                },
-                "expression": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "type",
-                "expression"
-              ],
-              "additionalProperties": true
-            }
-          ]
+          "$ref": "#/$defs/line",
+          "default": ""
         },
         "value": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "action": {
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/actionList"
@@ -94,10 +95,6 @@
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
         }
       },
-      "required": [
-        "text",
-        "value"
-      ],
       "additionalProperties": false
     },
     "input": {
@@ -147,20 +144,24 @@
             "timeout": {
               "type": "object",
               "properties": {
-                "delay": {
-                  "type": "integer"
+                "duration": {
+                  "type": "number",
+                  "default": 10
+                },
+                "showTimer": {
+                  "type": "boolean",
+                  "default": true
                 },
                 "action": {
                   "$ref": "../_shared/defs/expressions.schema.json#/$defs/actionList"
                 }
               },
-              "required": [
-                "delay",
-                "action"
-              ],
               "additionalProperties": false
             }
           },
+          "required": [
+            "type"
+          ],
           "additionalProperties": false
         }
       ]
@@ -207,10 +208,6 @@
           "additionalProperties": true
         }
       },
-      "required": [
-        "name",
-        "face"
-      ],
       "additionalProperties": false
     },
     "page": {
@@ -226,7 +223,8 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/line"
-          }
+          },
+          "default": []
         },
         "textColor": {
           "type": "string"
@@ -251,9 +249,6 @@
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/actionList"
         }
       },
-      "required": [
-        "lines"
-      ],
       "additionalProperties": false
     }
   }

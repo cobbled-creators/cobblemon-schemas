@@ -5,22 +5,17 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string"
-    },
-    "type": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+      "type": "string",
+      "default": ""
     },
     "spawns": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/habitatSpawn"
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "name",
-    "spawns"
-  ],
   "additionalProperties": false,
   "$defs": {
     "habitatSpawn": {

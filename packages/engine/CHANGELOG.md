@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Errors have a `severity`, `'error'` or `'warning'`. Unknown properties are warnings, since
+  Cobblemon skips keys it doesn't read and the file still loads. Everything else is an error.
+- An object in an object-or-string union (such as a species `hitbox`) no longer also gets the string
+  branch's errors ("Expected type 'string'") when the object branch is the one that failed.
+
 ## 0.2.0
 
 Clearer error messages, and room for schema packages to add their own (#13).

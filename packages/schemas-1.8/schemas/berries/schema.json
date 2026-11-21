@@ -11,7 +11,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     },
     "growthTime": {
       "$ref": "../_shared/defs/ranges.schema.json#/$defs/intMinMax"
@@ -40,13 +41,51 @@
           },
           "bonusYield": {
             "$ref": "../_shared/defs/ranges.schema.json#/$defs/intMinMax"
+          },
+          "range": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
           }
         },
         "required": [
           "variant",
           "bonusYield"
         ],
-        "additionalProperties": true
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "variant": {
+                  "enum": [
+                    "cobblemon:biome_downfall",
+                    "cobblemon:biome_temperature"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "range"
+              ]
+            }
+          }
+        ]
       }
     },
     "spawnConditions": {
@@ -75,12 +114,27 @@
           }
         },
         "required": [
-          "variant",
-          "minGroveSize",
-          "maxGroveSize"
+          "variant"
         ],
-        "additionalProperties": false
-      }
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "variant": {
+                  "const": "cobblemon:specific_biome"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "biome"
+              ]
+            }
+          }
+        ]
+      },
+      "default": []
     },
     "growthPoints": {
       "type": "array",
@@ -89,7 +143,8 @@
       }
     },
     "randomizedGrowthPoints": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "mutations": {
       "type": "object",
@@ -109,7 +164,16 @@
         "type": "integer"
       }
     },
+    "flavor": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
     "colour": {
+      "type": "string"
+    },
+    "color": {
       "type": "string"
     },
     "tintIndexes": {
@@ -141,38 +205,106 @@
     },
     "weight": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "default": 0
     },
     "boneMealChance": {
       "type": "number",
       "minimum": 0,
-      "maximum": 1
+      "maximum": 1,
+      "default": 0
     }
   },
   "required": [
     "baseYield",
-    "preferredBiomeTags",
     "growthTime",
     "refreshRate",
     "favoriteMulches",
     "growthFactors",
-    "spawnConditions",
     "growthPoints",
-    "randomizedGrowthPoints",
     "mutations",
     "sproutShape",
     "matureShape",
-    "flavours",
-    "colour",
     "tintIndexes",
     "flowerModel",
     "flowerTexture",
     "fruitModel",
     "fruitTexture",
     "stageOnePositioning",
-    "pokeSnackPositionings",
-    "weight",
-    "boneMealChance"
+    "pokeSnackPositionings"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "required": [
+            "flavours"
+          ]
+        },
+        {
+          "required": [
+            "flavor"
+          ]
+        }
+      ]
+    },
+    {
+      "anyOf": [
+        {
+          "required": [
+            "colour"
+          ]
+        },
+        {
+          "required": [
+            "color"
+          ]
+        }
+      ]
+    },
+    {
+      "if": {
+        "required": [
+          "spawnConditions"
+        ],
+        "properties": {
+          "spawnConditions": {
+            "contains": {
+              "properties": {
+                "variant": {
+                  "const": "cobblemon:preferred_biome"
+                }
+              },
+              "required": [
+                "variant"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "preferredBiomeTags"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "spawnConditions"
+        ],
+        "properties": {
+          "spawnConditions": {
+            "minItems": 1
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "weight"
+        ]
+      }
+    }
+  ]
 }

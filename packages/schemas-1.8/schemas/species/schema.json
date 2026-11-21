@@ -6,45 +6,47 @@
   "properties": {
     "nationalPokedexNumber": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "default": 1
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "default": "Bulbasaur"
     },
     "primaryType": {
-      "type": "string"
+      "type": "string",
+      "default": "grass"
     },
     "secondaryType": {
       "type": "string"
     },
     "maleRatio": {
-      "type": "number"
+      "type": "number",
+      "default": 0.5
     },
     "height": {
       "type": "number",
-      "minimum": 0
+      "minimum": 0,
+      "default": 1
     },
     "weight": {
       "type": "number",
-      "minimum": 0
+      "minimum": 0,
+      "default": 1
     },
     "pokedex": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     },
     "labels": {
       "type": "array",
       "items": {
         "type": "string"
-      }
-    },
-    "aspects": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      },
+      "default": []
     },
     "abilities": {
       "oneOf": [
@@ -58,37 +60,45 @@
           "type": "object",
           "additionalProperties": true
         }
-      ]
+      ],
+      "default": []
     },
     "eggGroups": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/eggGroup"
-      }
+      },
+      "default": []
     },
     "baseStats": {
       "$ref": "#/$defs/stats"
     },
     "evYield": {
-      "$ref": "#/$defs/evYields"
+      "$ref": "#/$defs/evYields",
+      "default": {}
     },
     "baseExperienceYield": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "default": 10
     },
     "experienceGroup": {
-      "type": "string"
+      "type": "string",
+      "default": "erratic"
     },
     "catchRate": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "default": 45
     },
     "eggCycles": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "default": 120
     },
     "baseFriendship": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "baseScale": {
       "type": "number",
@@ -106,12 +116,6 @@
             "height": {
               "type": "number",
               "exclusiveMinimum": 0
-            },
-            "fixed": {
-              "type": "boolean"
-            },
-            "standingEyeHeight": {
-              "type": "number"
             }
           },
           "required": [
@@ -121,7 +125,10 @@
           "additionalProperties": false
         },
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "player"
+          ]
         }
       ]
     },
@@ -146,7 +153,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "default": []
     },
     "signatureMoves": {
       "type": "array",
@@ -173,7 +181,8 @@
       "type": "number"
     },
     "behaviour": {
-      "$ref": "#/$defs/pokemonBehaviour"
+      "$ref": "#/$defs/pokemonBehaviour",
+      "default": {}
     },
     "drops": {
       "$ref": "../_shared/defs/drops.schema.json#/$defs/dropTable"
@@ -182,9 +191,6 @@
       "type": "boolean"
     },
     "implemented": {
-      "type": "boolean"
-    },
-    "battleOnly": {
       "type": "boolean"
     },
     "baseAI": {
@@ -226,7 +232,8 @@
         "lightLevel": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 15
+          "maximum": 15,
+          "default": 0
         },
         "liquidGlowMode": {
           "type": "string",
@@ -238,32 +245,13 @@
         }
       },
       "required": [
-        "lightLevel",
         "liquidGlowMode"
       ],
       "additionalProperties": false
     }
   },
   "required": [
-    "nationalPokedexNumber",
-    "name",
-    "primaryType",
-    "maleRatio",
-    "height",
-    "weight",
-    "pokedex",
-    "labels",
-    "abilities",
-    "eggGroups",
-    "baseStats",
-    "evYield",
-    "baseExperienceYield",
-    "experienceGroup",
-    "catchRate",
-    "eggCycles",
-    "baseFriendship",
-    "behaviour",
-    "moves"
+    "baseStats"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -627,7 +615,8 @@
                     "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
                   },
                   "tier": {
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 0
                   },
                   "ignoresLevel": {
                     "type": "boolean"
@@ -637,14 +626,14 @@
                   }
                 },
                 "required": [
-                  "pokemon",
-                  "tier"
+                  "pokemon"
                 ],
                 "additionalProperties": false
               }
             },
             "maxSize": {
-              "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+              "type": "integer",
+              "default": 0
             },
             "followDistance": {
               "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
@@ -716,88 +705,62 @@
             "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
           }
         },
-        "behaviour": {
-          "oneOf": [
-            {
-              "type": "null"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "key": {
-                  "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-                },
-                "transitionStrategy": {
-                  "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
-                },
-                "defaultBehaviour": {
-                  "type": "object",
-                  "additionalProperties": true
-                },
-                "alternateBehaviour": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
-              },
-              "required": [
-                "key"
-              ],
-              "additionalProperties": true
-            }
-          ]
-        },
         "behaviours": {
           "type": "object",
           "properties": {
             "LAND": {
-              "type": "object",
-              "additionalProperties": true
+              "$ref": "#/$defs/ridingBehaviour"
             },
             "AIR": {
-              "type": "object",
-              "additionalProperties": true
+              "$ref": "#/$defs/ridingBehaviour"
             },
             "LIQUID": {
-              "type": "object",
-              "additionalProperties": true
+              "$ref": "#/$defs/ridingBehaviour"
             }
           },
           "additionalProperties": true
-        },
-        "stats": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "displayName": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "ranges": {
-                "oneOf": [
-                  {
-                    "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": {
-                      "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
-                    }
-                  }
-                ]
-              }
-            },
-            "required": [
-              "ranges"
-            ],
-            "additionalProperties": false
-          }
         }
       },
       "required": [],
       "additionalProperties": false
+    },
+    "ridingBehaviour": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+        },
+        "transitionStrategy": {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+        },
+        "defaultBehaviour": {
+          "$ref": "#/$defs/ridingBehaviour"
+        },
+        "alternateBehaviour": {
+          "$ref": "#/$defs/ridingBehaviour"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "if": {
+        "properties": {
+          "key": {
+            "enum": [
+              "composite",
+              "cobblemon:composite"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "transitionStrategy",
+          "defaultBehaviour",
+          "alternateBehaviour"
+        ]
+      },
+      "additionalProperties": true
     },
     "requirement": {
       "type": "object",
@@ -815,7 +778,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "default": "id"
         },
         "variant": {
           "type": "string",
@@ -845,36 +809,37 @@
           ]
         },
         "optional": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "consumeHeldItem": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "requirements": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/requirement"
-          }
+          },
+          "default": []
         },
         "learnableMoves": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "default": []
         },
         "drops": {
           "$ref": "../_shared/defs/drops.schema.json#/$defs/dropTable"
         },
         "permanent": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
-        "id",
-        "variant",
-        "result",
-        "consumeHeldItem",
-        "learnableMoves"
+        "variant"
       ],
       "additionalProperties": false
     },
@@ -882,7 +847,8 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "default": "Normal"
         },
         "primaryType": {
           "type": "string"
@@ -909,10 +875,8 @@
           "type": "array",
           "items": {
             "type": "string"
-          }
-        },
-        "battleOnly": {
-          "type": "boolean"
+          },
+          "default": []
         },
         "baseStats": {
           "$ref": "#/$defs/stats"
@@ -933,6 +897,18 @@
         },
         "behaviour": {
           "$ref": "#/$defs/pokemonBehaviour"
+        },
+        "baseAI": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/behaviourConfig"
+          }
+        },
+        "ai": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/behaviourConfig"
+          }
         },
         "moves": {
           "type": "array",
@@ -965,7 +941,7 @@
           "$ref": "../_shared/defs/drops.schema.json#/$defs/dropTable"
         },
         "evYield": {
-          "$ref": "#/$defs/stats"
+          "$ref": "#/$defs/evYields"
         },
         "baseScale": {
           "type": "number"
@@ -980,9 +956,6 @@
                 },
                 "height": {
                   "type": "number"
-                },
-                "fixed": {
-                  "type": "boolean"
                 }
               },
               "required": [
@@ -992,7 +965,10 @@
               "additionalProperties": false
             },
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "player"
+              ]
             }
           ]
         },
@@ -1001,6 +977,9 @@
         },
         "baseExperienceYield": {
           "type": "integer"
+        },
+        "experienceGroup": {
+          "type": "string"
         },
         "preEvolution": {
           "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
@@ -1011,7 +990,8 @@
             "lightLevel": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 15
+              "maximum": 15,
+              "default": 0
             },
             "liquidGlowMode": {
               "type": "string",
@@ -1023,16 +1003,12 @@
             }
           },
           "required": [
-            "lightLevel",
             "liquidGlowMode"
           ],
           "additionalProperties": false
         },
         "riding": {
           "$ref": "#/$defs/riding"
-        },
-        "eggCycles": {
-          "type": "integer"
         },
         "eggGroups": {
           "type": "array",
@@ -1043,14 +1019,34 @@
         "catchRate": {
           "type": "integer"
         },
-        "baseFriendship": {
+        "_baseFriendship": {
           "type": "integer"
         },
         "standingEyeHeight": {
           "type": "number"
         },
+        "swimmingEyeHeight": {
+          "type": "number"
+        },
+        "flyingEyeHeight": {
+          "type": "number"
+        },
         "shoulderMountable": {
           "type": "boolean"
+        },
+        "shoulderEffects": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              }
+            ]
+          }
         },
         "requiredMove": {
           "type": "string"
@@ -1071,16 +1067,6 @@
           "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
         }
       },
-      "required": [
-        "name",
-        "primaryType",
-        "maleRatio",
-        "height",
-        "weight",
-        "labels",
-        "aspects",
-        "evolutions"
-      ],
       "additionalProperties": false
     }
   }

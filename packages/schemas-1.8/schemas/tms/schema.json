@@ -25,7 +25,8 @@
   },
   "required": [
     "moveName",
-    "type"
+    "type",
+    "obtainMethods"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -46,7 +47,8 @@
           "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
         },
         "yLevel": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0
         },
         "operator": {
           "type": "string",
@@ -66,23 +68,6 @@
           "if": {
             "properties": {
               "variant": {
-                "const": "cobblemon:advancement"
-              }
-            },
-            "required": [
-              "variant"
-            ]
-          },
-          "then": {
-            "required": [
-              "advancement"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "variant": {
                 "const": "cobblemon:y_level"
               }
             },
@@ -92,7 +77,6 @@
           },
           "then": {
             "required": [
-              "yLevel",
               "operator"
             ]
           }

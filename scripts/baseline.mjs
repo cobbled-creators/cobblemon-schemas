@@ -10,8 +10,9 @@ for (const pkg of packages) {
   const source = openSource(parseSourceOptions(args, pkg));
   const files = source.read(source.list(['data/', 'assets/']).filter((name) => name.endsWith('.json')));
   const results = validatePack(files, await loadEngine({ schemas: pkg.dir, live: true }));
-  const errors = results.flatMap((result) => result.errors.map((error) => `${result.file} /${error.pointer.join('/')}: ${error.message}`));
+  const problems = results.flatMap((result) => result.errors.map((error) => ({ ...error, line: `${error.severity} ${result.file} /${error.pointer.join('/')}: ${error.message}` })));
+  const warnings = problems.filter((problem) => problem.severity === 'warning').length;
 
-  for (const error of errors) console.log(error);
-  console.log(`\ncable/cobblemon @ ${source.label}: ${results.length} files checked, ${errors.length} errors`);
+  for (const problem of problems) console.log(problem.line);
+  console.log(`\ncable/cobblemon @ ${source.label}: ${results.length} files checked, ${problems.length - warnings} errors, ${warnings} warnings`);
 }

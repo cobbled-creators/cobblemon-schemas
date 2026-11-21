@@ -174,12 +174,10 @@
           }
         },
         "multiplier": {
-          "type": "number"
+          "type": "number",
+          "default": 1
         }
       },
-      "required": [
-        "multiplier"
-      ],
       "additionalProperties": false
     }
   }

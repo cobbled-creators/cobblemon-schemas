@@ -5,7 +5,8 @@
   "type": "object",
   "properties": {
     "enabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": true
     },
     "displayName": {
       "oneOf": [
@@ -18,12 +19,9 @@
       ]
     },
     "texture": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier",
+      "default": "cobblemon:dummy.png"
     }
   },
-  "required": [
-    "enabled",
-    "texture"
-  ],
   "additionalProperties": false
 }

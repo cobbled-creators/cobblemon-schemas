@@ -28,7 +28,8 @@
         "type": "object",
         "properties": {
           "displayForm": {
-            "type": "string"
+            "type": "string",
+            "default": "Normal"
           },
           "unlockForms": {
             "type": "array",
@@ -37,10 +38,6 @@
             }
           }
         },
-        "required": [
-          "displayForm",
-          "unlockForms"
-        ],
         "additionalProperties": false
       }
     },
@@ -50,23 +47,21 @@
         "type": "object",
         "properties": {
           "displayName": {
-            "type": "string"
+            "type": "string",
+            "default": "cobblemon.pokedex.variation.cosmetic"
           },
           "icon": {
-            "type": "string"
+            "type": "string",
+            "default": "cobblemon:textures/gui/pokedex/variation/cosmetic.png"
           },
           "aspects": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "default": []
           }
         },
-        "required": [
-          "displayName",
-          "icon",
-          "aspects"
-        ],
         "additionalProperties": false
       }
     }

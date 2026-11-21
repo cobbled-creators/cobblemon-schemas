@@ -5,7 +5,14 @@
   "type": "object",
   "properties": {
     "ingredient": {
-      "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+      "anyOf": [
+        {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
+        },
+        {
+          "$ref": "../_shared/defs/identifiers.schema.json#/$defs/tagIdentifier"
+        }
+      ]
     },
     "colour": {
       "type": "string"
@@ -37,16 +44,16 @@
             "type": "string"
           },
           "chance": {
-            "type": "number"
+            "type": "number",
+            "default": 0
           },
           "value": {
-            "type": "number"
+            "type": "number",
+            "default": 0
           }
         },
         "required": [
-          "type",
-          "chance",
-          "value"
+          "type"
         ],
         "additionalProperties": false
       }
@@ -55,16 +62,14 @@
       "type": "object",
       "properties": {
         "hunger": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0
         },
         "saturation": {
-          "type": "number"
+          "type": "number",
+          "default": 0
         }
       },
-      "required": [
-        "hunger",
-        "saturation"
-      ],
       "additionalProperties": false
     },
     "mobEffects": {
@@ -77,29 +82,29 @@
           },
           "duration": {
             "type": "integer",
-            "minimum": 0
+            "minimum": 0,
+            "default": 0
           },
           "amplifier": {
             "type": "integer",
-            "minimum": 0
+            "minimum": 0,
+            "default": 0
           },
           "ambient": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
           },
           "visible": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
           },
           "showIcon": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [
-          "effect",
-          "duration",
-          "amplifier",
-          "ambient",
-          "visible",
-          "showIcon"
+          "effect"
         ],
         "additionalProperties": false
       }
@@ -109,7 +114,7 @@
     "ingredient"
   ],
   "additionalProperties": false,
-  "oneOf": [
+  "anyOf": [
     {
       "required": [
         "colour"

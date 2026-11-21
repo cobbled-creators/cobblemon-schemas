@@ -5,19 +5,17 @@
   "type": "object",
   "properties": {
     "potionRestoreAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "60"
     },
     "superPotionRestoreAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "100"
     },
     "hyperPotionRestoreAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "150"
     }
   },
-  "required": [
-    "potionRestoreAmount",
-    "superPotionRestoreAmount",
-    "hyperPotionRestoreAmount"
-  ],
   "additionalProperties": false
 }

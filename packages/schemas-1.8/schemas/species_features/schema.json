@@ -62,10 +62,12 @@
       "type": "string"
     },
     "min": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "max": {
-      "type": "integer"
+      "type": "integer",
+      "default": 100
     },
     "display": {
       "type": "object",
@@ -122,12 +124,10 @@
         ]
       },
       "then": {
-        "required": [
-          "choices"
-        ],
         "properties": {
           "choices": {
-            "type": "array"
+            "type": "array",
+            "default": []
           }
         }
       }
@@ -144,32 +144,12 @@
         ]
       },
       "then": {
-        "required": [
-          "choices"
-        ],
         "properties": {
           "choices": {
-            "type": "object"
+            "type": "object",
+            "default": {}
           }
         }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "type": {
-            "const": "integer"
-          }
-        },
-        "required": [
-          "type"
-        ]
-      },
-      "then": {
-        "required": [
-          "min",
-          "max"
-        ]
       }
     }
   ],

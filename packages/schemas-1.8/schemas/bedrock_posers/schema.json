@@ -135,26 +135,8 @@
             },
             "condition": {
               "type": "string"
-            },
-            "namedAnimations": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
             }
           },
-          "anyOf": [
-            {
-              "required": [
-                "animation"
-              ]
-            },
-            {
-              "required": [
-                "namedAnimations"
-              ]
-            }
-          ],
           "additionalProperties": true
         }
       ]
@@ -176,9 +158,6 @@
           "$ref": "#/$defs/vec3"
         },
         "isVisible": {
-          "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
-        },
-        "visible": {
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
         },
         "comment": {
@@ -226,18 +205,6 @@
               "minimum": 0
             }
           },
-          "anyOf": [
-            {
-              "required": [
-                "animation"
-              ]
-            },
-            {
-              "required": [
-                "animations"
-              ]
-            }
-          ],
           "additionalProperties": true
         }
       ]
@@ -267,7 +234,8 @@
           "minItems": 1
         },
         "allPoseTypes": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         },
         "condition": {
           "oneOf": [
@@ -334,9 +302,6 @@
         "isDusk": {
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/booleanLike"
         },
-        "isWild": {
-          "$ref": "../_shared/defs/expressions.schema.json#/$defs/booleanLike"
-        },
         "isTouchingWater": {
           "$ref": "../_shared/defs/expressions.schema.json#/$defs/booleanLike"
         },
@@ -361,18 +326,6 @@
           ]
         }
       },
-      "anyOf": [
-        {
-          "required": [
-            "allPoseTypes"
-          ]
-        },
-        {
-          "required": [
-            "poseTypes"
-          ]
-        }
-      ],
       "additionalProperties": true
     }
   }

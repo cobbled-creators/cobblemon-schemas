@@ -29,5 +29,15 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "infiniteStamina",
+    "staminaRegenTime",
+    "hitboxBreachPercentage",
+    "jumpExpr",
+    "handlingExpr",
+    "speedExpr",
+    "accelerationExpr",
+    "staminaExpr"
+  ],
   "additionalProperties": false
 }

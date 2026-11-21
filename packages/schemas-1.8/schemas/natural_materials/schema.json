@@ -8,7 +8,8 @@
     "properties": {
       "content": {
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "default": 0
       },
       "item": {
         "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
@@ -20,21 +21,6 @@
         "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
       }
     },
-    "required": [
-      "content"
-    ],
-    "anyOf": [
-      {
-        "required": [
-          "item"
-        ]
-      },
-      {
-        "required": [
-          "tag"
-        ]
-      }
-    ],
     "additionalProperties": false
   }
 }

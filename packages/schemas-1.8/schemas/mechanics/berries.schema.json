@@ -5,31 +5,29 @@
   "type": "object",
   "properties": {
     "portionHealRatio": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "0.33"
     },
     "sitrusHealAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "v.pokemon.max_hp * 0.33"
     },
     "friendshipRaiseAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "v.pokemon.friendship < 100 ? 10 : (v.pokemon.friendship < 200 ? 5 : 1)"
     },
     "evLowerAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "10"
     },
     "ppRestoreAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "10"
     },
     "oranRestoreAmount": {
-      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+      "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike",
+      "default": "10"
     }
   },
-  "required": [
-    "portionHealRatio",
-    "sitrusHealAmount",
-    "friendshipRaiseAmount",
-    "evLowerAmount",
-    "ppRestoreAmount",
-    "oranRestoreAmount"
-  ],
   "additionalProperties": false
 }

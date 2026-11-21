@@ -32,5 +32,16 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "infiniteStamina",
+    "canJump",
+    "canSprint",
+    "lookYawLimit",
+    "speedExpr",
+    "accelerationExpr",
+    "staminaExpr",
+    "jumpExpr",
+    "handlingExpr"
+  ],
   "additionalProperties": false
 }

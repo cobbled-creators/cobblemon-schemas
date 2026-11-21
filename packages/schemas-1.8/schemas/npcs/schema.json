@@ -14,17 +14,7 @@
       "$ref": "../_shared/defs/identifiers.schema.json#/$defs/identifier"
     },
     "name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      ]
+      "type": "string"
     },
     "names": {
       "type": "array",
@@ -63,9 +53,6 @@
             },
             "height": {
               "type": "number"
-            },
-            "fixed": {
-              "type": "boolean"
             }
           },
           "required": [
@@ -154,6 +141,16 @@
   },
   "additionalProperties": false,
   "$defs": {
+    "primitiveExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
     "behaviourConfig": {
       "oneOf": [
         {
@@ -213,17 +210,7 @@
           "type": "object",
           "properties": {
             "aspect": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "type": "string"
             },
             "aspects": {
               "oneOf": [
@@ -337,10 +324,10 @@
               }
             },
             "minPokemon": {
-              "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+              "$ref": "#/$defs/primitiveExpression"
             },
             "maxPokemon": {
-              "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+              "$ref": "#/$defs/primitiveExpression"
             },
             "useFixedRandom": {
               "type": "boolean"
@@ -364,19 +351,24 @@
                             "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
                           },
                           "levelVariation": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                            "$ref": "#/$defs/primitiveExpression",
+                            "default": "0"
                           },
                           "level": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                            "$ref": "#/$defs/primitiveExpression"
                           },
                           "npcLevels": {
-                            "$ref": "../_shared/defs/ranges.schema.json#/$defs/intRange"
+                            "type": "string",
+                            "pattern": "^\\d+-\\d+$",
+                            "default": "1-100"
                           },
                           "selectableTimes": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                            "$ref": "#/$defs/primitiveExpression",
+                            "default": "1"
                           },
                           "weight": {
-                            "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
+                            "$ref": "#/$defs/primitiveExpression",
+                            "default": "1"
                           }
                         },
                         "required": [

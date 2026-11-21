@@ -8,7 +8,8 @@
       "type": "array",
       "items": {
         "$ref": "../_shared/defs/pokemon.schema.json#/$defs/pokemonProperties"
-      }
+      },
+      "default": []
     },
     "cosmeticItems": {
       "type": "array",
@@ -16,40 +17,21 @@
         "type": "object",
         "properties": {
           "consumedItem": {
-            "$ref": "../_shared/defs/pokemon.schema.json#/$defs/registryLikeCondition"
-          },
-          "item": {
-            "$ref": "../_shared/defs/pokemon.schema.json#/$defs/registryLikeCondition"
+            "$ref": "../_shared/defs/pokemon.schema.json#/$defs/registryLikeCondition",
+            "default": "cobblemon:poke_ball"
           },
           "aspects": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "default": []
           }
         },
-        "required": [
-          "aspects"
-        ],
-        "anyOf": [
-          {
-            "required": [
-              "consumedItem"
-            ]
-          },
-          {
-            "required": [
-              "item"
-            ]
-          }
-        ],
         "additionalProperties": false
-      }
+      },
+      "default": []
     }
   },
-  "required": [
-    "pokemon",
-    "cosmeticItems"
-  ],
   "additionalProperties": false
 }

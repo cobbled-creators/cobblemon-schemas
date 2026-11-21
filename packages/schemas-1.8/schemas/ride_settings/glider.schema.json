@@ -14,5 +14,10 @@
       "$ref": "../_shared/defs/expressions.schema.json#/$defs/expressionLike"
     }
   },
+  "required": [
+    "glideSpeed",
+    "speed",
+    "canStrafe"
+  ],
   "additionalProperties": false
 }
